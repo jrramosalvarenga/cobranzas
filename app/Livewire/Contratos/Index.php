@@ -39,6 +39,10 @@ class Index extends Component
 
     public string $status = 'active';
 
+    public bool $is_permanent = true;
+
+    public string $end_date = '';
+
     public string $setup_fee = '';
 
     public string $setup_fee_due_date = '';
@@ -75,6 +79,8 @@ class Index extends Component
         $this->setup_fee = $contrato->setup_fee !== null ? (string) $contrato->setup_fee : '';
         $this->setup_fee_due_date = $contrato->setup_fee_due_date?->toDateString() ?? '';
         $this->start_date = $contrato->start_date->toDateString();
+        $this->is_permanent = $contrato->end_date === null;
+        $this->end_date = $contrato->end_date?->toDateString() ?? '';
         $this->billing_day = $contrato->billing_day;
         $this->status = $contrato->status;
         $this->showModal = true;
@@ -90,6 +96,7 @@ class Index extends Component
             'setup_fee' => 'nullable|numeric|min:0',
             'setup_fee_due_date' => 'nullable|required_with:setup_fee|date',
             'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after:start_date',
             'billing_day' => 'required|integer|min:1|max:28',
             'status' => 'required|in:active,suspended,cancelled',
         ]);
@@ -97,6 +104,7 @@ class Index extends Component
         $data['monthly_fee'] = $data['monthly_fee'] !== '' ? $data['monthly_fee'] : null;
         $data['setup_fee'] = $data['setup_fee'] !== '' ? $data['setup_fee'] : null;
         $data['setup_fee_due_date'] = $data['setup_fee_due_date'] !== '' ? $data['setup_fee_due_date'] : null;
+        $data['end_date'] = $this->is_permanent ? null : ($data['end_date'] !== '' ? $data['end_date'] : null);
 
         $isNew = $this->editingId === null;
 
@@ -137,10 +145,11 @@ class Index extends Component
         $this->reset([
             'editingId', 'client_id', 'service_type_id', 'contract_number',
             'monthly_fee', 'setup_fee', 'setup_fee_due_date', 'start_date',
-            'billing_day', 'status', 'clientSearch',
+            'end_date', 'billing_day', 'status', 'clientSearch',
         ]);
         $this->billing_day = 1;
         $this->status = 'active';
+        $this->is_permanent = true;
         $this->resetErrorBag();
     }
 

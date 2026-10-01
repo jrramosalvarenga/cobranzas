@@ -16,6 +16,7 @@ class Contract extends Model
         'setup_fee',
         'setup_fee_due_date',
         'start_date',
+        'end_date',
         'billing_day',
         'status',
     ];
@@ -27,6 +28,7 @@ class Contract extends Model
             'setup_fee' => 'decimal:2',
             'setup_fee_due_date' => 'date',
             'start_date' => 'date',
+            'end_date' => 'date',
             'billing_day' => 'integer',
         ];
     }

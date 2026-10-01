@@ -39,6 +39,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Servicio</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tarifa</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Día de cobro</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Vigencia</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                             <th class="px-4 py-2"></th>
                         </tr>
@@ -51,6 +52,9 @@
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->serviceType->name }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ config('cobranzas.currency_symbol') }} {{ number_format($contrato->effectiveMonthlyFee(), 2) }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->billing_day }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">
+                                    {{ $contrato->end_date ? $contrato->end_date->format('d/m/Y') : 'Permanente' }}
+                                </td>
                                 <td class="px-4 py-3 text-sm">
                                     @php
                                         $badge = match ($contrato->status) {
@@ -73,7 +77,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-4 py-6 text-center text-sm text-gray-500">Sin contratos registrados.</td>
+                                <td colspan="8" class="px-4 py-6 text-center text-sm text-gray-500">Sin contratos registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -144,6 +148,21 @@
                             <x-input-error :messages="$errors->get('billing_day')" class="mt-2" />
                         </div>
                     </div>
+
+                    <div>
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input wire:model.live="is_permanent" type="checkbox" class="rounded border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm" />
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Contrato permanente</span>
+                        </label>
+                    </div>
+
+                    @if (! $is_permanent)
+                        <div>
+                            <x-input-label for="end_date" value="Fecha de finalización" />
+                            <x-text-input wire:model="end_date" id="end_date" type="date" class="block mt-1 w-full" />
+                            <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
+                        </div>
+                    @endif
 
                     @if (! $editingId)
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
