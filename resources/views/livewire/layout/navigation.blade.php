@@ -37,6 +37,10 @@ new class extends Component
                     <x-nav-link :href="route('cobranza.registrar')" :active="request()->routeIs('cobranza.*')" wire:navigate>
                         {{ __('Cobranza') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('constancias.index')" :active="request()->routeIs('constancias.*')" wire:navigate>
+                        {{ __('Constancias') }}
+                    </x-nav-link>
+                    @if(auth()->user()->isAdmin())
                     <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
                         {{ __('Clientes') }}
                     </x-nav-link>
@@ -49,6 +53,13 @@ new class extends Component
                     <x-nav-link :href="route('servicios.index')" :active="request()->routeIs('servicios.*')" wire:navigate>
                         {{ __('Servicios') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('contabilidad.index')" :active="request()->routeIs('contabilidad.*')" wire:navigate>
+                        {{ __('Contabilidad') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" wire:navigate>
+                        {{ __('Usuarios') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -103,6 +114,10 @@ new class extends Component
             <x-responsive-nav-link :href="route('cobranza.registrar')" :active="request()->routeIs('cobranza.*')" wire:navigate>
                 {{ __('Cobranza') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('constancias.index')" :active="request()->routeIs('constancias.*')" wire:navigate>
+                {{ __('Constancias') }}
+            </x-responsive-nav-link>
+            @if(auth()->user()->isAdmin())
             <x-responsive-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
                 {{ __('Clientes') }}
             </x-responsive-nav-link>
@@ -115,6 +130,13 @@ new class extends Component
             <x-responsive-nav-link :href="route('servicios.index')" :active="request()->routeIs('servicios.*')" wire:navigate>
                 {{ __('Servicios') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('contabilidad.index')" :active="request()->routeIs('contabilidad.*')" wire:navigate>
+                {{ __('Contabilidad') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" wire:navigate>
+                {{ __('Usuarios') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

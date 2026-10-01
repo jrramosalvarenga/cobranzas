@@ -17,6 +17,15 @@
         <div class="py-8">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
+                <div class="flex items-center justify-between gap-4">
+                    <a href="{{ route('cobranza.historial') }}" wire:navigate class="text-sm text-indigo-600 hover:underline">
+                        Historial de pagos por cliente &rarr;
+                    </a>
+                    <a href="{{ route('cobranza.morosos') }}" wire:navigate class="text-sm text-red-600 hover:underline">
+                        Clientes morosos &rarr;
+                    </a>
+                </div>
+
                 @if ($error)
                     <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-md text-sm">
                         {{ $error }}
@@ -59,7 +68,7 @@
                                     <div class="text-sm text-gray-400">Ref: {{ $clienteSeleccionado->reference }}</div>
                                 @endif
                                 @if ($clienteSeleccionado->latitude && $clienteSeleccionado->longitude)
-                                    <a href="https://www.openstreetmap.org/?mlat={{ $clienteSeleccionado->latitude }}&mlon={{ $clienteSeleccionado->longitude }}#map=17/{{ $clienteSeleccionado->latitude }}/{{ $clienteSeleccionado->longitude }}"
+                                    <a href="https://www.google.com/maps?q={{ $clienteSeleccionado->latitude }},{{ $clienteSeleccionado->longitude }}"
                                        target="_blank" class="text-xs text-indigo-600 hover:underline">Ver ubicación en el mapa</a>
                                 @else
                                     <div class="text-xs text-amber-600">Sin ubicación GPS registrada</div>
@@ -215,7 +224,7 @@
                             </div>
 
                             <div class="flex justify-end">
-                                <x-primary-button wire:click="registrarPago">
+                                <x-primary-button wire:click="confirmarPago">
                                     Registrar pago e imprimir recibo
                                 </x-primary-button>
                             </div>
@@ -225,4 +234,66 @@
             </div>
         </div>
     </div>
+
+    @if ($showConfirmModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0">
+            <div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" wire:click="$set('showConfirmModal', false)"></div>
+
+            <div class="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl sm:max-w-lg sm:mx-auto">
+                <div class="p-6 space-y-4">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Confirmar pago</h2>
+
+                    <div class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                        <div><span class="font-medium">Cliente:</span> {{ $clienteSeleccionado?->full_name }}</div>
+                        <div><span class="font-medium">Método:</span> {{ ucfirst($method) }}</div>
+                        <div><span class="font-medium">Fecha:</span> {{ \Illuminate\Support\Carbon::parse($payment_date)->format('d/m/Y') }}</div>
+                        @if ($notes)
+                            <div><span class="font-medium">Notas:</span> {{ $notes }}</div>
+                        @endif
+                    </div>
+
+                    <div class="border rounded-md dark:border-gray-700 overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-900">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cuota</th>
+                                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @php
+                                    $cuotasConfirm = \App\Models\Cuota::whereIn('id', array_keys(array_filter($seleccion)))->with('contract.serviceType')->get()->keyBy('id');
+                                    $totalConfirm = 0;
+                                @endphp
+                                @foreach ($cuotasConfirm as $cuota)
+                                    @php $totalConfirm += (float) ($montos[$cuota->id] ?? 0); @endphp
+                                    <tr>
+                                        <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-200">
+                                            {{ $cuota->contract->serviceType->name }} &middot; {{ $cuota->periodLabel() }}
+                                        </td>
+                                        <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-200 text-right">
+                                            {{ config('cobranzas.currency_symbol') }} {{ number_format((float) ($montos[$cuota->id] ?? 0), 2) }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot class="bg-gray-50 dark:bg-gray-900">
+                                <tr>
+                                    <td class="px-4 py-2 text-sm font-bold text-gray-900 dark:text-gray-100">TOTAL</td>
+                                    <td class="px-4 py-2 text-sm font-bold text-gray-900 dark:text-gray-100 text-right">
+                                        {{ config('cobranzas.currency_symbol') }} {{ number_format($totalConfirm, 2) }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2">
+                        <x-secondary-button type="button" wire:click="$set('showConfirmModal', false)">Cancelar</x-secondary-button>
+                        <x-primary-button type="button" wire:click="registrarPago">Confirmar y generar recibo</x-primary-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

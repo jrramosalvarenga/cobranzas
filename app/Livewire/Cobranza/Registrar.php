@@ -42,6 +42,8 @@ class Registrar extends Component
 
     public ?string $locationMessage = null;
 
+    public bool $showConfirmModal = false;
+
     public function mount(): void
     {
         $this->payment_date = now()->toDateString();
@@ -122,7 +124,7 @@ class Registrar extends Component
         $this->montos[$cuotaId] = $cuota->saldo();
     }
 
-    public function registrarPago(): void
+    public function confirmarPago(): void
     {
         $this->error = null;
 
@@ -151,6 +153,16 @@ class Registrar extends Component
                 return;
             }
         }
+
+        $this->showConfirmModal = true;
+    }
+
+    public function registrarPago(): void
+    {
+        $this->showConfirmModal = false;
+
+        $cuotaIds = array_keys(array_filter($this->seleccion));
+        $cuotas = Cuota::whereIn('id', $cuotaIds)->get()->keyBy('id');
 
         $receiptNumber = 'R-'.str_pad((string) (Payment::max('id') + 1), 6, '0', STR_PAD_LEFT);
 
@@ -184,8 +196,10 @@ class Registrar extends Component
 
         if ($this->clientSearch !== '' && $this->selectedClientId === null) {
             $clientesEncontrados = Client::query()
-                ->where('full_name', 'like', "%{$this->clientSearch}%")
-                ->orWhere('document_number', 'like', "%{$this->clientSearch}%")
+                ->whereHas('contracts')
+                ->where(fn ($q) => $q
+                    ->where('full_name', 'like', "%{$this->clientSearch}%")
+                    ->orWhere('document_number', 'like', "%{$this->clientSearch}%"))
                 ->orderBy('full_name')
                 ->limit(10)
                 ->get();

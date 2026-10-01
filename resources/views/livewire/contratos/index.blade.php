@@ -145,6 +145,26 @@
                         </div>
                     </div>
 
+                    @if (! $editingId)
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Deuda inicial (opcional)</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <x-input-label for="setup_fee" value="Monto de deuda inicial" />
+                                    <x-text-input wire:model="setup_fee" id="setup_fee" type="number" step="0.01" min="0" class="block mt-1 w-full" placeholder="0.00" />
+                                    <x-input-error :messages="$errors->get('setup_fee')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="setup_fee_due_date" value="Fecha de vencimiento" />
+                                    <x-text-input wire:model="setup_fee_due_date" id="setup_fee_due_date" type="date" class="block mt-1 w-full" />
+                                    <x-input-error :messages="$errors->get('setup_fee_due_date')" class="mt-2" />
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2">Se genera como cuota única al crear el contrato. No se regenera cada mes.</p>
+                        </div>
+                    @endif
+
                     <div>
                         <x-input-label for="status" value="Estado" />
                         <select wire:model="status" id="status" class="block mt-1 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm">

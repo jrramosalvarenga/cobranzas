@@ -9,11 +9,11 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-indigo-500">
-                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Clientes</div>
-                    <div class="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ $totalClientes }}</div>
-                    <div class="text-xs text-gray-400 mt-1">registrados en total</div>
-                </div>
+                <a href="{{ route('cobranza.morosos') }}" wire:navigate class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-red-500 hover:shadow-md transition">
+                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Clientes morosos</div>
+                    <div class="mt-1 text-2xl font-semibold {{ $totalMorosos > 0 ? 'text-red-600' : 'text-gray-900 dark:text-gray-100' }}">{{ $totalMorosos }}</div>
+                    <div class="text-xs text-gray-400 mt-1">con cuotas vencidas</div>
+                </a>
 
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-emerald-500">
                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Contratos activos</div>
@@ -34,9 +34,45 @@
                 </div>
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-teal-500">
+                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ingresos de hoy</div>
+                    <div class="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ config('cobranzas.currency_symbol') }} {{ number_format($ingresosHoy, 2) }}</div>
+                    <div class="text-xs text-gray-400 mt-1">cobranza + otros ingresos</div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-indigo-500">
+                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ingresos últimos 5 días</div>
+                    <div class="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ config('cobranzas.currency_symbol') }} {{ number_format($ingresosUltimos5Dias, 2) }}</div>
+                    <div class="text-xs text-gray-400 mt-1">cobranza + otros ingresos</div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Ingresos de los últimos 5 días</h3>
+                    <a href="{{ route('contabilidad.estado-cuenta') }}" wire:navigate class="text-xs text-indigo-600 hover:underline">Ver estado de cuenta &rarr;</a>
+                </div>
+                <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        @foreach ($ingresosPorDia as $dia)
+                            <tr class="{{ $dia['fecha']->isToday() ? 'bg-teal-50 dark:bg-teal-900/20' : '' }}">
+                                <td class="px-5 py-3 text-sm text-gray-900 dark:text-gray-200">
+                                    {{ $dia['fecha']->translatedFormat('l d/m/Y') }}
+                                    @if ($dia['fecha']->isToday())
+                                        <span class="ms-2 px-2 py-0.5 text-xs rounded-full bg-teal-100 text-teal-800">Hoy</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-gray-200 text-right">{{ config('cobranzas.currency_symbol') }} {{ number_format($dia['total'], 2) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
             <div>
                 <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Accesos rápidos</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                     <a href="{{ route('cobranza.registrar') }}" wire:navigate
                         class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-0.5 transition">
                         <div class="mx-auto w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2">
@@ -75,6 +111,14 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
                         <div class="text-sm font-medium text-gray-800 dark:text-gray-100">Servicios</div>
+                    </a>
+
+                    <a href="{{ route('contabilidad.index') }}" wire:navigate
+                        class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 text-center hover:shadow-md hover:-translate-y-0.5 transition">
+                        <div class="mx-auto w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3v-6m-3 6v-1m-4 4h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                        </div>
+                        <div class="text-sm font-medium text-gray-800 dark:text-gray-100">Contabilidad</div>
                     </a>
                 </div>
             </div>

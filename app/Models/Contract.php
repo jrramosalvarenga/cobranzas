@@ -13,6 +13,8 @@ class Contract extends Model
         'service_type_id',
         'contract_number',
         'monthly_fee',
+        'setup_fee',
+        'setup_fee_due_date',
         'start_date',
         'billing_day',
         'status',
@@ -22,6 +24,8 @@ class Contract extends Model
     {
         return [
             'monthly_fee' => 'decimal:2',
+            'setup_fee' => 'decimal:2',
+            'setup_fee_due_date' => 'date',
             'start_date' => 'date',
             'billing_day' => 'integer',
         ];

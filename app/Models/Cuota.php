@@ -12,6 +12,7 @@ class Cuota extends Model
         'contract_id',
         'period_year',
         'period_month',
+        'description',
         'amount',
         'due_date',
         'status',
@@ -37,7 +38,7 @@ class Cuota extends Model
 
     public function totalPaid(): string
     {
-        return (string) $this->payments()->sum('amount');
+        return (string) $this->payments()->active()->sum('amount');
     }
 
     public function saldo(): string
@@ -73,8 +74,26 @@ class Cuota extends Model
         return $this->due_date->isPast() ? 'vencida' : 'pendiente';
     }
 
+    public function isSetupFee(): bool
+    {
+        return $this->period_month === 0 && $this->description === null;
+    }
+
+    public function isAdditionalCharge(): bool
+    {
+        return $this->period_month === 0 && $this->description !== null;
+    }
+
     public function periodLabel(): string
     {
+        if ($this->description !== null) {
+            return $this->description;
+        }
+
+        if ($this->period_month === 0) {
+            return 'Deuda inicial '.$this->period_year;
+        }
+
         $meses = [
             1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
             5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',

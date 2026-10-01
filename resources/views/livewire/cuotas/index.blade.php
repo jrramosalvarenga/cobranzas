@@ -46,9 +46,14 @@
                     </div>
                 </div>
 
-                <x-primary-button wire:click="generar" wire:confirm="¿Generar las cuotas del periodo seleccionado para todos los contratos activos?">
-                    Generar cuotas del mes
-                </x-primary-button>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('cuotas.cobros-adicionales') }}" wire:navigate class="text-sm text-indigo-600 hover:underline whitespace-nowrap">
+                        Cobros adicionales
+                    </a>
+                    <x-primary-button wire:click="generar" wire:confirm="¿Generar las cuotas del periodo seleccionado para todos los contratos activos?">
+                        Generar cuotas del mes
+                    </x-primary-button>
+                </div>
             </div>
 
             @if ($message)
