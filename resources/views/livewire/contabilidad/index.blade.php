@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Contabilidad
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Contabilidad
+            </h2>
+            <x-tour-button id="contabilidad" :steps="[
+                ['title' => 'Contabilidad', 'description' => 'Registra ingresos y egresos adicionales que no provienen de la cobranza regular (ej: venta de materiales, gastos operativos).'],
+                ['title' => 'Tipo de movimiento', 'description' => 'Cada entrada se clasifica como ingreso o egreso, con fecha, descripcion y monto.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

@@ -1,15 +1,22 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Contratos
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Contratos
+            </h2>
+            <x-tour-button id="contratos" :steps="[
+                ['title' => 'Contratos', 'description' => 'Administra los contratos de servicio de tus clientes. Cada contrato genera cuotas mensuales automaticamente.'],
+                ['element' => '#contratos-filters', 'title' => 'Buscar y filtrar', 'description' => 'Busca por nombre o documento del cliente, y filtra por estado (activo, suspendido, cancelado).'],
+                ['element' => '#contratos-new', 'title' => 'Nuevo contrato', 'description' => 'Crea un nuevo contrato asignando cliente, servicio, tarifa, dia de cobro y vigencia.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
             <div class="flex flex-wrap items-center justify-between gap-4">
-                <div class="flex flex-wrap gap-3">
+                <div id="contratos-filters" class="flex flex-wrap gap-3">
                     <input wire:model.live.debounce.400ms="search" type="text" placeholder="Buscar por cliente o documento..."
                         class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 shadow-sm w-64" />
 
@@ -21,7 +28,7 @@
                     </select>
                 </div>
 
-                <x-primary-button wire:click="create">Nuevo contrato</x-primary-button>
+                <x-primary-button id="contratos-new" wire:click="create">Nuevo contrato</x-primary-button>
             </div>
 
             @if ($deleteError)

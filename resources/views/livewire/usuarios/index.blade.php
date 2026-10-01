@@ -1,8 +1,15 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Usuarios
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Usuarios
+            </h2>
+            <x-tour-button id="usuarios" :steps="[
+                ['title' => 'Usuarios', 'description' => 'Administra los usuarios del sistema. Solo los administradores pueden acceder a este modulo.'],
+                ['title' => 'Roles', 'description' => 'Administrador: acceso completo a todos los modulos. Cobrador: solo accede a Cobranza, Constancias y Dashboard.'],
+                ['title' => 'Seguridad', 'description' => 'Puedes cambiar la contrasena de cualquier usuario y asignar o revocar el rol de administrador.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

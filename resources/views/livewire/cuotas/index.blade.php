@@ -1,8 +1,15 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Cuotas mensuales
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Cuotas mensuales
+            </h2>
+            <x-tour-button id="cuotas" :steps="[
+                ['title' => 'Cuotas mensuales', 'description' => 'Aqui se generan y gestionan las cuotas de cada periodo. Las cuotas se crean automaticamente a partir de los contratos activos.'],
+                ['title' => 'Generar cuotas', 'description' => 'Selecciona el mes y ano para generar las cuotas. Solo se crean cuotas para contratos activos que aun no tengan cuota en ese periodo.'],
+                ['title' => 'Estados', 'description' => 'Las cuotas pueden estar pendientes, pagadas parcialmente, pagadas o vencidas segun la fecha y los pagos registrados.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

@@ -1,8 +1,15 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Constancia de Abonado
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Constancia de Abonado
+            </h2>
+            <x-tour-button id="constancias" :steps="[
+                ['title' => 'Constancia de Abonado', 'description' => 'Genera constancias oficiales que certifican que un cliente es abonado activo de la empresa.'],
+                ['title' => 'Buscar cliente', 'description' => 'Busca por nombre o documento. Solo aparecen clientes con al menos un contrato activo.'],
+                ['title' => 'Generar PDF', 'description' => 'Haz clic en Generar PDF para obtener la constancia lista para imprimir con los datos del cliente y contrato.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

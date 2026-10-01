@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Tipos de servicio
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Tipos de servicio
+            </h2>
+            <x-tour-button id="servicios" :steps="[
+                ['title' => 'Tipos de servicio', 'description' => 'Define los servicios que ofrece la empresa (ej: agua potable, alcantarillado). Cada servicio tiene un precio mensual base.'],
+                ['title' => 'Precio mensual', 'description' => 'El precio del servicio se usa como tarifa por defecto en los contratos, aunque cada contrato puede tener una tarifa personalizada.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

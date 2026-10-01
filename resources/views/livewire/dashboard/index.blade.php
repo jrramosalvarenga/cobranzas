@@ -1,14 +1,24 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Panel principal
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Panel principal
+            </h2>
+            <x-tour-button id="dashboard" :steps="[
+                ['title' => 'Panel principal', 'description' => 'Bienvenido al sistema de cobranzas. Aqui puedes ver un resumen general de la operacion.'],
+                ['element' => '#dash-cards', 'title' => 'Indicadores clave', 'description' => 'Morosos, contratos activos, cuotas pendientes y cobros del mes de un vistazo.'],
+                ['element' => '#dash-ingresos', 'title' => 'Ingresos recientes', 'description' => 'Ingresos de hoy y acumulado de los ultimos 5 dias (cobranza + otros ingresos).'],
+                ['element' => '#dash-chart', 'title' => 'Detalle por dia', 'description' => 'Tabla con el desglose de ingresos diarios. El dia actual se resalta.'],
+                ['element' => '#dash-shortcuts', 'title' => 'Accesos rapidos', 'description' => 'Navega directamente a los modulos mas usados del sistema.'],
+                ['element' => '#dash-payments', 'title' => 'Ultimos pagos', 'description' => 'Los pagos mas recientes registrados en el sistema.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div id="dash-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <a href="{{ route('cobranza.morosos') }}" wire:navigate class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-red-500 hover:shadow-md transition">
                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Clientes morosos</div>
                     <div class="mt-1 text-2xl font-semibold {{ $totalMorosos > 0 ? 'text-red-600' : 'text-gray-900 dark:text-gray-100' }}">{{ $totalMorosos }}</div>
@@ -34,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div id="dash-ingresos" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border-l-4 border-teal-500">
                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ingresos de hoy</div>
                     <div class="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ config('cobranzas.currency_symbol') }} {{ number_format($ingresosHoy, 2) }}</div>
@@ -48,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div id="dash-chart" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                     <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Ingresos de los últimos 5 días</h3>
                     <a href="{{ route('contabilidad.estado-cuenta') }}" wire:navigate class="text-xs text-indigo-600 hover:underline">Ver estado de cuenta &rarr;</a>
@@ -70,7 +80,7 @@
                 </table>
             </div>
 
-            <div>
+            <div id="dash-shortcuts">
                 <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Accesos rápidos</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                     <a href="{{ route('cobranza.registrar') }}" wire:navigate
@@ -123,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div id="dash-payments" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
                     <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Últimos pagos registrados</h3>
                 </div>

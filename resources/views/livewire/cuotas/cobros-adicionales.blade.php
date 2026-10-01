@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Cobros adicionales
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Cobros adicionales
+            </h2>
+            <x-tour-button id="cobros-adicionales" :steps="[
+                ['title' => 'Cobros adicionales', 'description' => 'Genera cuotas unicas fuera del ciclo mensual regular (ej: reconexion, multas, instalacion).'],
+                ['title' => 'Cuota unica', 'description' => 'Estas cuotas se asocian a un contrato y aparecen como pendientes de pago junto con las cuotas regulares.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

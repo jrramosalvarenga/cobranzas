@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Cobranza — Historial por cliente
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Cobranza — Historial por cliente
+            </h2>
+            <x-tour-button id="historial" :steps="[
+                ['title' => 'Historial de pagos', 'description' => 'Busca un cliente para ver todo su historial de pagos organizados por fecha.'],
+                ['title' => 'Reimprimir recibos', 'description' => 'Desde el historial puedes reimprimir cualquier recibo de pago anterior.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

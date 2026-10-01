@@ -1,8 +1,15 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Clientes
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Clientes
+            </h2>
+            <x-tour-button id="clientes" :steps="[
+                ['title' => 'Clientes', 'description' => 'Administra tu cartera de clientes. Puedes agregar, editar y eliminar clientes.'],
+                ['title' => 'Datos del cliente', 'description' => 'Cada cliente tiene nombre, documento, telefono, email, direccion y ubicacion GPS para facilitar la cobranza.'],
+                ['title' => 'Ubicacion GPS', 'description' => 'Al crear o editar un cliente puedes marcar su ubicacion en el mapa para que el cobrador lo encuentre facilmente.'],
+            ]" />
+        </div>
     </x-slot>
 
     @once

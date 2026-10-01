@@ -1,8 +1,15 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Cobranza — Registrar pago
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Cobranza — Registrar pago
+            </h2>
+            <x-tour-button id="cobranza" :steps="[
+                ['title' => 'Registrar pago', 'description' => 'Desde aqui puedes registrar pagos de los clientes. Primero busca al cliente, luego selecciona las cuotas a pagar.'],
+                ['element' => '#cobr-links', 'title' => 'Enlaces rapidos', 'description' => 'Accede al historial de pagos por cliente o al listado de morosos.'],
+                ['element' => '#cobr-search', 'title' => 'Buscar cliente', 'description' => 'Escribe el nombre o documento del cliente para buscarlo. Haz clic en el resultado para seleccionarlo.'],
+            ]" />
+        </div>
     </x-slot>
 
     @once
@@ -17,7 +24,7 @@
         <div class="py-8">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
-                <div class="flex items-center justify-between gap-4">
+                <div id="cobr-links" class="flex items-center justify-between gap-4">
                     <a href="{{ route('cobranza.historial') }}" wire:navigate class="text-sm text-indigo-600 hover:underline">
                         Historial de pagos por cliente &rarr;
                     </a>
@@ -39,7 +46,7 @@
                 @endif
 
                 @if (! $clienteSeleccionado)
-                    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6 space-y-4">
+                    <div id="cobr-search" class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6 space-y-4">
                         <x-input-label value="Buscar cliente por nombre o documento" />
                         <x-text-input wire:model.live.debounce.300ms="clientSearch" class="block w-full" placeholder="Escriba para buscar..." autofocus />
 

@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Clientes morosos
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Clientes morosos
+            </h2>
+            <x-tour-button id="morosos" :steps="[
+                ['title' => 'Clientes morosos', 'description' => 'Lista de clientes con cuotas vencidas. Muestra la deuda total, dias de atraso y detalle de cuotas pendientes.'],
+                ['title' => 'Exportar PDF', 'description' => 'Puedes generar un reporte PDF con el listado completo de morosos para impresion o distribucion.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">

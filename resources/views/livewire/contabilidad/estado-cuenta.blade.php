@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Estado de cuenta
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Estado de cuenta
+            </h2>
+            <x-tour-button id="estado-cuenta" :steps="[
+                ['title' => 'Estado de cuenta', 'description' => 'Resumen financiero consolidado con todos los ingresos (cobranza + otros) y egresos del periodo seleccionado.'],
+                ['title' => 'Filtrar por periodo', 'description' => 'Selecciona el rango de fechas para ver el movimiento financiero de ese periodo.'],
+            ]" />
+        </div>
     </x-slot>
 
     <div class="py-8">
