@@ -64,6 +64,7 @@
     </style>
 </head>
 <body>
+    <div class="center" style="font-size: 11px; font-weight: bold; margin-bottom: 2px;">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
     <h1>{{ config('cobranzas.company_name') }}</h1>
     <div class="center">Recibo de pago</div>
     <div class="center">N° {{ $receiptNumber }}</div>

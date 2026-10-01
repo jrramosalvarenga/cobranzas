@@ -17,6 +17,7 @@
     </style>
 </head>
 <body>
+    <div style="text-align: center; font-size: 10px; font-weight: bold; margin-bottom: 2px;">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
     <h1>{{ $companyName }} — Clientes Morosos</h1>
     <div class="sub">{{ $fecha }} &middot; {{ $totalMorosos }} cliente(s) &middot; Deuda total: {{ $currencySymbol }} {{ number_format($totalDeudaGlobal, 2) }}</div>
 

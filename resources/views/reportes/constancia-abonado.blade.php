@@ -19,6 +19,7 @@
 </head>
 <body>
     <div class="header">
+        <div style="font-size: 11px; font-weight: bold;">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
         <div class="company">{{ $companyName }}</div>
         <div class="sub">Constancia generada el {{ $fecha }}</div>
     </div>
