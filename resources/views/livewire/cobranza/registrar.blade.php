@@ -170,6 +170,11 @@
                         @endif
                     </div>
 
+                    @php
+                        $cuotasActuales = $cuotasPendientes->filter(fn ($c) => $c->due_date->lte(now()->endOfMonth()));
+                        $cuotasFuturas = $cuotasPendientes->filter(fn ($c) => $c->due_date->gt(now()->endOfMonth()));
+                    @endphp
+
                     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-900">
@@ -182,8 +187,8 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                @forelse ($cuotasPendientes as $cuota)
-                                    <tr>
+                                @forelse ($cuotasActuales as $cuota)
+                                    <tr class="{{ $cuota->due_date->isPast() ? 'bg-red-50 dark:bg-red-900/20' : '' }}">
                                         <td class="px-4 py-3">
                                             <input type="checkbox" wire:click="toggleCuota({{ $cuota->id }})" @checked(!empty($seleccion[$cuota->id]))
                                                 class="rounded border-gray-300 text-indigo-600 shadow-sm">
@@ -194,7 +199,12 @@
                                                 <div class="text-xs text-gray-500">{{ $cuota->contract->description }}</div>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $cuota->periodLabel() }}</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">
+                                            {{ $cuota->periodLabel() }}
+                                            @if ($cuota->due_date->isPast())
+                                                <span class="text-xs text-red-600 dark:text-red-400 font-medium">Vencida</span>
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ config('cobranzas.currency_symbol') }} {{ number_format($cuota->saldo(), 2) }}</td>
                                         <td class="px-4 py-3 text-sm">
                                             @if (!empty($seleccion[$cuota->id]))
@@ -211,6 +221,46 @@
                             </tbody>
                         </table>
                     </div>
+
+                    @if ($cuotasFuturas->isNotEmpty())
+                        <div x-data="{ open: false }" class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
+                            <button type="button" x-on:click="open = !open"
+                                class="w-full flex items-center justify-between px-4 py-3 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                                <span class="text-sm font-medium text-blue-700 dark:text-blue-300">
+                                    Pago adelantado ({{ $cuotasFuturas->count() }} {{ $cuotasFuturas->count() === 1 ? 'cuota' : 'cuotas' }} futuras)
+                                </span>
+                                <svg x-bind:class="{ 'rotate-180': open }" class="w-5 h-5 text-blue-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <table x-show="open" x-collapse class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach ($cuotasFuturas as $cuota)
+                                        <tr>
+                                            <td class="px-4 py-3">
+                                                <input type="checkbox" wire:click="toggleCuota({{ $cuota->id }})" @checked(!empty($seleccion[$cuota->id]))
+                                                    class="rounded border-gray-300 text-indigo-600 shadow-sm">
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">
+                                                {{ $cuota->contract->serviceType->name }}
+                                                @if ($cuota->contract->description)
+                                                    <div class="text-xs text-gray-500">{{ $cuota->contract->description }}</div>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $cuota->periodLabel() }}</td>
+                                            <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ config('cobranzas.currency_symbol') }} {{ number_format($cuota->saldo(), 2) }}</td>
+                                            <td class="px-4 py-3 text-sm">
+                                                @if (!empty($seleccion[$cuota->id]))
+                                                    <input type="number" step="0.01" min="0.01" wire:model="montos.{{ $cuota->id }}"
+                                                        class="w-28 rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm" />
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
 
                     @if ($cuotasPendientes->isNotEmpty())
                         <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6 space-y-4">

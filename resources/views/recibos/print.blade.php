@@ -3,12 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Recibo {{ $receiptNumber }}</title>
+    <style id="page-size"></style>
     <style>
-        @page {
-            size: {{ config('cobranzas.printer_width_mm') }}mm auto;
-            margin: 0;
-        }
-
         * {
             box-sizing: border-box;
         }
@@ -154,7 +150,14 @@
 
     <script>
         window.onload = function () {
-            window.print();
+            var widthMm = {{ config('cobranzas.printer_width_mm') }};
+            var heightPx = document.body.scrollHeight + 20;
+            var heightMm = Math.ceil(heightPx * 25.4 / 96);
+
+            document.getElementById('page-size').textContent =
+                '@page { size: ' + widthMm + 'mm ' + heightMm + 'mm; margin: 0; }';
+
+            setTimeout(function () { window.print(); }, 500);
         };
     </script>
 </body>

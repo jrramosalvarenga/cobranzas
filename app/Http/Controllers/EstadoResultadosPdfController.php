@@ -69,14 +69,15 @@ class EstadoResultadosPdfController extends Controller
             ->active()
             ->whereDate('payment_date', '>=', $desde)
             ->whereDate('payment_date', '<=', $hasta)
-            ->with(['cuota.contract.client', 'cuota.contract.serviceType'])
             ->get()
-            ->map(fn (Payment $p) => (object) [
-                'fecha' => $p->payment_date,
-                'descripcion' => $this->descripcionPago($p),
+            ->groupBy(fn (Payment $p) => $p->payment_date->toDateString())
+            ->map(fn ($group, $date) => (object) [
+                'fecha' => Carbon::parse($date),
+                'descripcion' => 'Cobros domiciliares mes de '.Carbon::parse($date)->translatedFormat('F Y').' ('.Carbon::parse($date)->format('d/m/Y').')',
                 'tipo' => 'ingreso',
-                'monto' => (float) $p->amount,
-            ]);
+                'monto' => (float) $group->sum('amount'),
+            ])
+            ->values();
 
         $entradas = AccountingEntry::query()
             ->whereDate('entry_date', '>=', $desde)
@@ -90,15 +91,5 @@ class EstadoResultadosPdfController extends Controller
             ]);
 
         return $pagos->concat($entradas)->sortBy('fecha')->values();
-    }
-
-    private function descripcionPago(Payment $p): string
-    {
-        $client = $p->cuota->contract->client->full_name;
-        $service = $p->cuota->contract->serviceType->name;
-        $contract = $p->cuota->contract;
-        $desc = $contract->description ? " /{$contract->description}" : '';
-
-        return "Deposito a cuenta por cobro domiciliar /{$service}{$desc} {$client}";
     }
 }

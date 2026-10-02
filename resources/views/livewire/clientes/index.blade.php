@@ -25,7 +25,6 @@
                     class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 shadow-sm w-full max-w-xs" />
 
                 <div class="flex items-center gap-2">
-                    <x-export-buttons tableId="clientes-table" filename="Clientes" />
                     <x-primary-button wire:click="create">Nuevo cliente</x-primary-button>
                 </div>
             </div>
