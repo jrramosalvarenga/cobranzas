@@ -18,7 +18,10 @@
                 <input wire:model.live.debounce.400ms="search" type="text" placeholder="Buscar servicio..."
                     class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 shadow-sm w-full max-w-xs" />
 
-                <x-primary-button wire:click="create">Nuevo servicio</x-primary-button>
+                <div class="flex items-center gap-2">
+                    <x-export-buttons tableId="servicios-table" filename="Servicios" />
+                    <x-primary-button wire:click="create">Nuevo servicio</x-primary-button>
+                </div>
             </div>
 
             @if ($deleteError)
@@ -28,13 +31,12 @@
             @endif
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table id="servicios-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tarifa mensual</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                            <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">

@@ -12,6 +12,7 @@ class AccountingEntry extends Model
     use HasFactory;
 
     public const CATEGORIAS_INGRESO = [
+        'Venta de agua',
         'Donación',
         'Venta de activo',
         'Intereses',

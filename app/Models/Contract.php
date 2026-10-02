@@ -12,6 +12,7 @@ class Contract extends Model
         'client_id',
         'service_type_id',
         'contract_number',
+        'description',
         'monthly_fee',
         'setup_fee',
         'setup_fee_due_date',
@@ -19,7 +20,25 @@ class Contract extends Model
         'end_date',
         'billing_day',
         'status',
+        'suspended_from',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Contract $contract) {
+            if (blank($contract->contract_number)) {
+                $next = (self::withoutGlobalScopes()->max('id') ?? 0) + 1;
+                $contract->contract_number = 'C-'.str_pad((string) ($next + 99), 5, '0', STR_PAD_LEFT);
+            }
+        });
+
+        static::created(function (Contract $contract) {
+            $expected = 'C-'.str_pad((string) ($contract->id + 99), 5, '0', STR_PAD_LEFT);
+            if ($contract->contract_number !== $expected) {
+                $contract->updateQuietly(['contract_number' => $expected]);
+            }
+        });
+    }
 
     protected function casts(): array
     {
@@ -29,6 +48,7 @@ class Contract extends Model
             'setup_fee_due_date' => 'date',
             'start_date' => 'date',
             'end_date' => 'date',
+            'suspended_from' => 'date',
             'billing_day' => 'integer',
         ];
     }

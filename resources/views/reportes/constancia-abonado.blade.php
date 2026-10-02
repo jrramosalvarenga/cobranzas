@@ -4,29 +4,118 @@
     <meta charset="utf-8">
     <title>Constancia de Abonado</title>
     <style>
-        body { font-family: sans-serif; font-size: 12px; color: #000; margin: 0; padding: 40px 50px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 16px; margin: 0; text-transform: uppercase; }
-        .header .company { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
-        .header .sub { font-size: 10px; color: #666; }
-        .title { text-align: center; font-size: 15px; font-weight: bold; text-transform: uppercase; margin: 30px 0 20px; text-decoration: underline; }
-        .body { line-height: 1.8; text-align: justify; margin: 0 20px; }
-        .body .dato { font-weight: bold; }
-        .firma { margin-top: 80px; text-align: center; }
-        .firma .linea { display: inline-block; width: 250px; border-top: 1px solid #000; padding-top: 4px; font-size: 10px; }
-        .footer { text-align: center; font-size: 8px; color: #999; position: fixed; bottom: 20px; left: 0; right: 0; }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            color: #000;
+            margin: 0;
+            padding: 72px 72px 60px;
+            line-height: 2;
+        }
+
+        .header-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .header-logo {
+            display: table-cell;
+            width: 70px;
+            vertical-align: middle;
+        }
+
+        .header-logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .header-center {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .header-center .org {
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        .header-center .company {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header-center .sub {
+            font-size: 10pt;
+            color: #555;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 30px 0 20px;
+        }
+
+        .body-text {
+            text-align: justify;
+            text-indent: 36pt;
+        }
+
+        .body-text p {
+            margin: 0 0 0 0;
+        }
+
+        .dato {
+            font-weight: bold;
+        }
+
+        .firma-section {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .firma-linea {
+            display: inline-block;
+            width: 250px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            font-size: 10pt;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 9pt;
+            color: #999;
+            position: fixed;
+            bottom: 40px;
+            left: 72px;
+            right: 72px;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div style="font-size: 11px; font-weight: bold;">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
-        <div class="company">{{ $companyName }}</div>
-        <div class="sub">Constancia generada el {{ $fecha }}</div>
+    <div class="header-row">
+        <div class="header-logo">
+            <img src="{{ public_path('images/escudo-junta-agua.jpeg') }}">
+        </div>
+        <div class="header-center">
+            <div class="org">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
+            <div class="company">{{ $companyName }}</div>
+            <div class="sub">Constancia generada el {{ $fecha }}</div>
+        </div>
+        <div class="header-logo" style="text-align: right;">
+            <img src="{{ public_path('images/escudo-honduras.png') }}">
+        </div>
     </div>
 
     <div class="title">Constancia de Abonado</div>
 
-    <div class="body">
+    <div class="body-text">
         <p>
             Por medio de la presente se hace constar que
             <span class="dato">{{ $cliente->full_name }}</span>,
@@ -38,19 +127,24 @@
         <p>
             El abonado cuenta con el contrato N° <span class="dato">{{ $contrato->contract_number }}</span>,
             correspondiente al servicio de <span class="dato">{{ $servicio->name }}</span>,
-            con fecha de inicio <span class="dato">{{ $contrato->start_date->translatedFormat('d/m/Y') }}</span>
+            con fecha de inicio <span class="dato">{{ $contrato->start_date->translatedFormat('d \d\e F \d\e Y') }}</span>
             y una tarifa mensual de <span class="dato">{{ config('cobranzas.currency_symbol') }} {{ number_format($contrato->effectiveMonthlyFee(), 2) }}</span>.
         </p>
 
         <p>
             Se extiende la presente constancia a solicitud del interesado/a para los fines que estime conveniente.
         </p>
+
+        <p>
+            Dada en San Francisco de la Paz, Olancho, a los {{ now()->translatedFormat('d') }} días
+            del mes de {{ now()->translatedFormat('F') }} de {{ now()->translatedFormat('Y') }}.
+        </p>
     </div>
 
-    <div class="firma">
-        <div class="linea">Firma y sello</div>
+    <div class="firma-section">
+        <div class="firma-linea">Firma y sello</div>
     </div>
 
-    <div class="footer">{{ $companyName }} &mdash; Constancia de abonado generada el {{ $fecha }}</div>
+    <div class="footer">{{ $companyName }} &mdash; San Francisco de la Paz, Olancho</div>
 </body>
 </html>

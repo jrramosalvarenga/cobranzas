@@ -18,6 +18,9 @@
                 <a href="{{ route('contabilidad.index') }}" wire:navigate class="text-sm text-indigo-600 hover:underline">
                     &larr; Ver movimientos contables
                 </a>
+                <a href="{{ route('contabilidad.estado-resultados.pdf', ['desde' => $desde, 'hasta' => $hasta]) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white transition">
+                    Imprimir estado de resultados
+                </a>
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 flex flex-wrap items-end gap-4">
@@ -53,16 +56,30 @@
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
-                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                     <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Ingresos por cobranza</h3>
+                    <x-export-buttons tableId="ec-cobranza-table" filename="Ingresos-Cobranza" />
                 </div>
-                <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                <table id="ec-cobranza-table" class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-900">
+                        <tr>
+                            <th class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                            <th class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                            <th class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase">Servicio</th>
+                            <th class="px-5 py-2 text-right text-xs font-medium text-gray-500 uppercase">Monto</th>
+                        </tr>
+                    </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                         @forelse ($pagosCobranza as $pago)
                             <tr>
                                 <td class="px-5 py-3 text-sm text-gray-500">{{ $pago->payment_date->format('d/m/Y') }}</td>
                                 <td class="px-5 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $pago->cuota->contract->client->full_name }}</td>
-                                <td class="px-5 py-3 text-sm text-gray-500">{{ $pago->cuota->contract->serviceType->name }} &middot; {{ $pago->cuota->periodLabel() }}</td>
+                                <td class="px-5 py-3 text-sm text-gray-500">
+                                    {{ $pago->cuota->contract->serviceType->name }} &middot; {{ $pago->cuota->periodLabel() }}
+                                    @if ($pago->cuota->contract->description)
+                                        <div class="text-xs text-gray-400">{{ $pago->cuota->contract->description }}</div>
+                                    @endif
+                                </td>
                                 <td class="px-5 py-3 text-sm font-medium text-emerald-700 text-right">+{{ config('cobranzas.currency_symbol') }} {{ number_format($pago->amount, 2) }}</td>
                             </tr>
                         @empty
@@ -75,10 +92,19 @@
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
-                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
                     <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Otros ingresos y gastos</h3>
+                    <x-export-buttons tableId="ec-movimientos-table" filename="Otros-Ingresos-Gastos" />
                 </div>
-                <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                <table id="ec-movimientos-table" class="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-900">
+                        <tr>
+                            <th class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                            <th class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase">Categoría</th>
+                            <th class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
+                            <th class="px-5 py-2 text-right text-xs font-medium text-gray-500 uppercase">Monto</th>
+                        </tr>
+                    </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                         @forelse ($movimientos as $mov)
                             <tr>

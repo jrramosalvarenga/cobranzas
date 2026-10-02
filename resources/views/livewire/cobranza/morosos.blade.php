@@ -19,10 +19,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                     Registrar pago
                 </a>
-                <a href="{{ route('cobranza.morosos.pdf') }}" target="_blank" class="inline-flex items-center gap-1.5 text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    Descargar PDF
-                </a>
+                <div class="flex items-center gap-2">
+                    <x-export-buttons tableId="morosos-table" filename="Morosos" />
+                    <a href="{{ route('cobranza.morosos.pdf') }}" target="_blank" class="inline-flex items-center gap-1.5 text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Descargar PDF
+                    </a>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -56,6 +59,31 @@
                     <x-text-input wire:model.live.debounce.300ms="search" class="block w-full pl-10" placeholder="Buscar cliente por nombre o documento..." />
                 </div>
             </div>
+
+            <table id="morosos-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th>Dirección</th>
+                        <th>Cuotas vencidas</th>
+                        <th>Días atraso</th>
+                        <th>Deuda total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($morosos as $m)
+                        <tr>
+                            <td>{{ $m->cliente->full_name }}</td>
+                            <td>{{ $m->cliente->document_number }}</td>
+                            <td>{{ $m->cliente->address_line }}</td>
+                            <td>{{ $m->cuotasVencidas }}</td>
+                            <td>{{ $m->diasAtraso }}</td>
+                            <td>{{ config('cobranzas.currency_symbol') }} {{ number_format($m->totalDeuda, 2) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
 
             @forelse ($morosos as $moroso)
                 <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">

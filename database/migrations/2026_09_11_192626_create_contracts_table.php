@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('contract_number')->unique();
             $table->decimal('monthly_fee', 10, 2)->nullable();
             $table->date('start_date');
-            $table->unsignedTinyInteger('billing_day')->default(1);
+            $table->unsignedTinyInteger('billing_day')->default(28);
             $table->enum('status', ['active', 'suspended', 'cancelled'])->default('active');
             $table->timestamps();
         });

@@ -6,7 +6,7 @@ use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Cuota;
 use App\Models\ServiceType;
-use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -31,11 +31,13 @@ class Index extends Component
 
     public string $contract_number = '';
 
+    public string $contract_description = '';
+
     public string $monthly_fee = '';
 
     public string $start_date = '';
 
-    public int $billing_day = 1;
+    public int $billing_day = 28;
 
     public string $status = 'active';
 
@@ -46,6 +48,8 @@ class Index extends Component
     public string $setup_fee = '';
 
     public string $setup_fee_due_date = '';
+
+    public string $suspended_from = '';
 
     public ?string $deleteError = null;
 
@@ -62,7 +66,7 @@ class Index extends Component
     public function create(): void
     {
         $this->resetForm();
-        $this->contract_number = 'C-'.str_pad((string) (Contract::max('id') + 1), 5, '0', STR_PAD_LEFT);
+        $this->contract_number = 'C-'.str_pad((string) ((Contract::withoutGlobalScopes()->max('id') ?? 0) + 100), 5, '0', STR_PAD_LEFT);
         $this->start_date = now()->toDateString();
         $this->showModal = true;
     }
@@ -75,6 +79,7 @@ class Index extends Component
         $this->client_id = $contrato->client_id;
         $this->service_type_id = $contrato->service_type_id;
         $this->contract_number = $contrato->contract_number;
+        $this->contract_description = (string) $contrato->description;
         $this->monthly_fee = $contrato->monthly_fee !== null ? (string) $contrato->monthly_fee : '';
         $this->setup_fee = $contrato->setup_fee !== null ? (string) $contrato->setup_fee : '';
         $this->setup_fee_due_date = $contrato->setup_fee_due_date?->toDateString() ?? '';
@@ -83,15 +88,16 @@ class Index extends Component
         $this->end_date = $contrato->end_date?->toDateString() ?? '';
         $this->billing_day = $contrato->billing_day;
         $this->status = $contrato->status;
+        $this->suspended_from = $contrato->suspended_from?->format('Y-m') ?? '';
         $this->showModal = true;
     }
 
     public function save(): void
     {
-        $data = $this->validate([
+        $rules = [
             'client_id' => 'required|exists:clients,id',
             'service_type_id' => 'required|exists:service_types,id',
-            'contract_number' => ['required', 'string', 'max:50', Rule::unique('contracts', 'contract_number')->ignore($this->editingId)],
+            'contract_description' => 'nullable|string|max:1000',
             'monthly_fee' => 'nullable|numeric|min:0',
             'setup_fee' => 'nullable|numeric|min:0',
             'setup_fee_due_date' => 'nullable|required_with:setup_fee|date',
@@ -99,12 +105,26 @@ class Index extends Component
             'end_date' => 'nullable|date|after:start_date',
             'billing_day' => 'required|integer|min:1|max:28',
             'status' => 'required|in:active,suspended,cancelled',
-        ]);
+        ];
 
+        if ($this->status === 'suspended') {
+            $rules['suspended_from'] = 'required|date_format:Y-m';
+        }
+
+        $data = $this->validate($rules);
+
+        $data['description'] = $data['contract_description'] !== '' ? $data['contract_description'] : null;
+        unset($data['contract_description']);
         $data['monthly_fee'] = $data['monthly_fee'] !== '' ? $data['monthly_fee'] : null;
         $data['setup_fee'] = $data['setup_fee'] !== '' ? $data['setup_fee'] : null;
         $data['setup_fee_due_date'] = $data['setup_fee_due_date'] !== '' ? $data['setup_fee_due_date'] : null;
         $data['end_date'] = $this->is_permanent ? null : ($data['end_date'] !== '' ? $data['end_date'] : null);
+
+        if ($data['status'] === 'suspended') {
+            $data['suspended_from'] = $data['suspended_from'].'-01';
+        } else {
+            $data['suspended_from'] = null;
+        }
 
         $isNew = $this->editingId === null;
 
@@ -121,6 +141,22 @@ class Index extends Component
                 'due_date' => $data['setup_fee_due_date'],
                 'status' => 'pendiente',
             ]);
+        }
+
+        if ($data['status'] === 'suspended' && $data['suspended_from'] !== null) {
+            $from = Carbon::parse($data['suspended_from']);
+
+            $contract->cuotas()
+                ->where(function ($q) use ($from) {
+                    $q->where('period_year', '>', $from->year)
+                        ->orWhere(function ($q2) use ($from) {
+                            $q2->where('period_year', $from->year)
+                                ->where('period_month', '>=', $from->month);
+                        });
+                })
+                ->where('period_month', '>', 0)
+                ->whereIn('status', ['pendiente', 'vencida'])
+                ->update(['status' => 'cancelada']);
         }
 
         $this->showModal = false;
@@ -144,10 +180,10 @@ class Index extends Component
     {
         $this->reset([
             'editingId', 'client_id', 'service_type_id', 'contract_number',
-            'monthly_fee', 'setup_fee', 'setup_fee_due_date', 'start_date',
-            'end_date', 'billing_day', 'status', 'clientSearch',
+            'contract_description', 'monthly_fee', 'setup_fee', 'setup_fee_due_date',
+            'start_date', 'end_date', 'billing_day', 'status', 'clientSearch', 'suspended_from',
         ]);
-        $this->billing_day = 1;
+        $this->billing_day = 28;
         $this->status = 'active';
         $this->is_permanent = true;
         $this->resetErrorBag();

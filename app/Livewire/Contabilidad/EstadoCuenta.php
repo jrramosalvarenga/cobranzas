@@ -15,7 +15,7 @@ class EstadoCuenta extends Component
 
     public function mount(): void
     {
-        $this->desde = now()->format('Y-m-d');
+        $this->desde = now()->startOfMonth()->format('Y-m-d');
         $this->hasta = now()->format('Y-m-d');
     }
 
@@ -26,6 +26,7 @@ class EstadoCuenta extends Component
         $hasta = $this->hasta ?: $desde;
 
         $pagosCobranza = Payment::query()
+            ->active()
             ->whereDate('payment_date', '>=', $desde)
             ->whereDate('payment_date', '<=', $hasta)
             ->with(['cuota.contract.client', 'cuota.contract.serviceType'])

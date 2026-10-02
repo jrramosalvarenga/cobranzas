@@ -54,6 +54,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <x-export-buttons tableId="cuotas-table" filename="Cuotas" />
                     <a href="{{ route('cuotas.cobros-adicionales') }}" wire:navigate class="text-sm text-indigo-600 hover:underline whitespace-nowrap">
                         Cobros adicionales
                     </a>
@@ -70,7 +71,7 @@
             @endif
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table id="cuotas-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>

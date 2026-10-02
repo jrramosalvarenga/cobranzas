@@ -28,7 +28,10 @@
                     </select>
                 </div>
 
-                <x-primary-button id="contratos-new" wire:click="create">Nuevo contrato</x-primary-button>
+                <div class="flex items-center gap-2">
+                    <x-export-buttons tableId="contratos-table" filename="Contratos" />
+                    <x-primary-button id="contratos-new" wire:click="create">Nuevo contrato</x-primary-button>
+                </div>
             </div>
 
             @if ($deleteError)
@@ -38,7 +41,7 @@
             @endif
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table id="contratos-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">N° contrato</th>
@@ -54,7 +57,12 @@
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse ($contratos as $contrato)
                             <tr>
-                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->contract_number }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">
+                                    {{ $contrato->contract_number }}
+                                    @if ($contrato->description)
+                                        <div class="text-xs text-gray-500">{{ Str::limit($contrato->description, 40) }}</div>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->client->full_name }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->serviceType->name }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ config('cobranzas.currency_symbol') }} {{ number_format($contrato->effectiveMonthlyFee(), 2) }}</td>
@@ -133,8 +141,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <x-input-label for="contract_number" value="N° de contrato" />
-                            <x-text-input wire:model="contract_number" id="contract_number" class="block mt-1 w-full" />
-                            <x-input-error :messages="$errors->get('contract_number')" class="mt-2" />
+                            <x-text-input wire:model="contract_number" id="contract_number" class="block mt-1 w-full bg-gray-100 dark:bg-gray-700" readonly />
                         </div>
 
                         <div>
@@ -142,7 +149,15 @@
                             <x-text-input wire:model="monthly_fee" id="monthly_fee" type="number" step="0.01" min="0" class="block mt-1 w-full" placeholder="Usa la del servicio si se deja vacío" />
                             <x-input-error :messages="$errors->get('monthly_fee')" class="mt-2" />
                         </div>
+                    </div>
 
+                    <div>
+                        <x-input-label for="contract_description" value="Descripción del contrato (opcional)" />
+                        <textarea wire:model="contract_description" id="contract_description" rows="2" class="block mt-1 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm" placeholder="Ej. Servicio de agua para local comercial..."></textarea>
+                        <x-input-error :messages="$errors->get('contract_description')" class="mt-2" />
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <x-input-label for="start_date" value="Fecha de inicio" />
                             <x-text-input wire:model="start_date" id="start_date" type="date" class="block mt-1 w-full" />
@@ -193,13 +208,22 @@
 
                     <div>
                         <x-input-label for="status" value="Estado" />
-                        <select wire:model="status" id="status" class="block mt-1 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm">
+                        <select wire:model.live="status" id="status" class="block mt-1 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm">
                             <option value="active">Activo</option>
                             <option value="suspended">Suspendido</option>
                             <option value="cancelled">Cancelado</option>
                         </select>
                         <x-input-error :messages="$errors->get('status')" class="mt-2" />
                     </div>
+
+                    @if ($status === 'suspended')
+                        <div>
+                            <x-input-label for="suspended_from" value="Suspender a partir del mes" />
+                            <x-text-input wire:model="suspended_from" id="suspended_from" type="month" class="block mt-1 w-full" />
+                            <p class="text-xs text-gray-400 mt-1">Las cuotas pendientes desde este mes serán canceladas.</p>
+                            <x-input-error :messages="$errors->get('suspended_from')" class="mt-2" />
+                        </div>
+                    @endif
 
                     <div class="flex justify-end gap-2 pt-2">
                         <x-secondary-button type="button" wire:click="$set('showModal', false)">Cancelar</x-secondary-button>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConstanciaAbonadoPdfController;
+use App\Http\Controllers\EstadoResultadosPdfController;
 use App\Http\Controllers\MorososPdfController;
 use App\Http\Controllers\RecibosController;
 use App\Livewire\Clientes;
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('cuotas/cobros-adicionales', Cuotas\CobrosAdicionales::class)->name('cuotas.cobros-adicionales');
         Route::get('contabilidad', Contabilidad\Index::class)->name('contabilidad.index');
         Route::get('contabilidad/estado-cuenta', Contabilidad\EstadoCuenta::class)->name('contabilidad.estado-cuenta');
+        Route::get('contabilidad/estado-resultados/pdf', EstadoResultadosPdfController::class)->name('contabilidad.estado-resultados.pdf');
         Route::get('usuarios', Usuarios\Index::class)->name('usuarios.index');
     });
 });

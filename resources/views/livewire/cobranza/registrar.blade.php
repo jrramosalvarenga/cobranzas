@@ -188,7 +188,12 @@
                                             <input type="checkbox" wire:click="toggleCuota({{ $cuota->id }})" @checked(!empty($seleccion[$cuota->id]))
                                                 class="rounded border-gray-300 text-indigo-600 shadow-sm">
                                         </td>
-                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $cuota->contract->serviceType->name }}</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">
+                                            {{ $cuota->contract->serviceType->name }}
+                                            @if ($cuota->contract->description)
+                                                <div class="text-xs text-gray-500">{{ $cuota->contract->description }}</div>
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $cuota->periodLabel() }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ config('cobranzas.currency_symbol') }} {{ number_format($cuota->saldo(), 2) }}</td>
                                         <td class="px-4 py-3 text-sm">

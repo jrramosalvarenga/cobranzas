@@ -19,17 +19,19 @@
                 <input wire:model.live.debounce.400ms="search" type="text" placeholder="Buscar por nombre o email..."
                     class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 shadow-sm w-64" />
 
-                <x-primary-button wire:click="create">Nuevo usuario</x-primary-button>
+                <div class="flex items-center gap-2">
+                    <x-export-buttons tableId="usuarios-table" filename="Usuarios" />
+                    <x-primary-button wire:click="create">Nuevo usuario</x-primary-button>
+                </div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table id="usuarios-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Rol</th>
-                            <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">

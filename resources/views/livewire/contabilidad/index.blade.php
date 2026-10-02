@@ -19,7 +19,10 @@
                     Ver estado de cuenta &rarr;
                 </a>
 
-                <x-primary-button wire:click="create">Nuevo registro</x-primary-button>
+                <div class="flex items-center gap-2">
+                    <x-export-buttons tableId="contabilidad-table" filename="Contabilidad" />
+                    <x-primary-button wire:click="create">Nuevo registro</x-primary-button>
+                </div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 flex flex-wrap items-end gap-4">
@@ -50,7 +53,7 @@
             @endif
 
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table id="contabilidad-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
