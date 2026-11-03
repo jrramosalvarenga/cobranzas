@@ -6,7 +6,6 @@ use App\Livewire\Cobranza\Registrar;
 use App\Models\Client;
 use App\Models\Contract;
 use App\Models\ServiceType;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -17,7 +16,8 @@ class ClientSearchTest extends TestCase
 
     public function test_only_clients_with_a_contract_appear_in_the_search_results(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTenant();
+        $this->actingAsWithTenant($user);
 
         $serviceType = ServiceType::create([
             'name' => 'Agua',

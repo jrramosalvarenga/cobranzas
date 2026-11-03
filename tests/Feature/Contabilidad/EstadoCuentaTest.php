@@ -9,7 +9,6 @@ use App\Models\Contract;
 use App\Models\Cuota;
 use App\Models\Payment;
 use App\Models\ServiceType;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -25,7 +24,8 @@ class EstadoCuentaTest extends TestCase
 
     public function test_it_nets_collections_and_other_income_against_expenses_for_the_selected_range(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTenant();
+        $this->actingAsWithTenant($user);
 
         $serviceType = ServiceType::create([
             'name' => 'Agua',
@@ -68,19 +68,21 @@ class EstadoCuentaTest extends TestCase
 
         AccountingEntry::factory()->ingreso()->create([
             'user_id' => $user->id,
+            'tenant_id' => $user->tenant_id,
             'amount' => 50,
             'entry_date' => '2026-09-10',
         ]);
 
         AccountingEntry::factory()->egreso()->create([
             'user_id' => $user->id,
+            'tenant_id' => $user->tenant_id,
             'amount' => 30,
             'entry_date' => '2026-09-10',
         ]);
 
-        // Outside the selected range, must not be counted.
         AccountingEntry::factory()->egreso()->create([
             'user_id' => $user->id,
+            'tenant_id' => $user->tenant_id,
             'amount' => 999,
             'entry_date' => '2026-01-01',
         ]);

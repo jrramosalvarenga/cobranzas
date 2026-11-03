@@ -12,11 +12,16 @@ use App\Livewire\Contratos;
 use App\Livewire\Cuotas;
 use App\Livewire\Dashboard;
 use App\Livewire\Servicios;
+use App\Livewire\Tenants;
 use App\Livewire\Usuarios;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+
+    return redirect()->route('login');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -34,6 +39,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Constancias — accesible para admin y cobrador
     Route::get('constancias', Constancias\Index::class)->name('constancias.index');
     Route::get('constancias/{contract}/pdf', ConstanciaAbonadoPdfController::class)->name('constancias.pdf');
+
+    // Solo super administrador
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('tenants', Tenants\Index::class)->name('tenants.index');
+    });
 
     // Solo administrador
     Route::middleware('role:admin')->group(function () {

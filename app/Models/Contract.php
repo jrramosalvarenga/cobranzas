@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contract extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'tenant_id',
         'client_id',
         'service_type_id',
         'contract_number',

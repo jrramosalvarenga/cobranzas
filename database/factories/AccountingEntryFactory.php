@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class AccountingEntryFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -26,6 +24,15 @@ class AccountingEntryFactory extends Factory
             'entry_date' => fake()->dateTimeBetween('-1 month', 'now')->format('Y-m-d'),
             'user_id' => User::factory(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (AccountingEntry $entry) {
+            if (! $entry->tenant_id && $entry->user_id) {
+                $entry->tenant_id = User::withoutGlobalScopes()->find($entry->user_id)?->tenant_id;
+            }
+        });
     }
 
     public function ingreso(): static

@@ -4,7 +4,6 @@ namespace Tests\Feature\Contabilidad;
 
 use App\Livewire\Contabilidad\Index;
 use App\Models\AccountingEntry;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -20,7 +19,7 @@ class AccountingEntryManagementTest extends TestCase
 
     public function test_it_creates_an_expense_entry(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTenant();
 
         Livewire::actingAs($user)
             ->test(Index::class)
@@ -41,7 +40,7 @@ class AccountingEntryManagementTest extends TestCase
 
     public function test_it_creates_an_other_income_entry(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTenant();
 
         Livewire::actingAs($user)
             ->test(Index::class)
@@ -61,7 +60,7 @@ class AccountingEntryManagementTest extends TestCase
 
     public function test_amount_must_be_greater_than_zero(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithTenant();
 
         Livewire::actingAs($user)
             ->test(Index::class)
@@ -75,9 +74,11 @@ class AccountingEntryManagementTest extends TestCase
 
     public function test_it_can_filter_entries_by_type(): void
     {
-        $user = User::factory()->create();
-        AccountingEntry::factory()->ingreso()->create(['user_id' => $user->id]);
-        AccountingEntry::factory()->egreso()->create(['user_id' => $user->id]);
+        $user = $this->createUserWithTenant();
+        $this->actingAsWithTenant($user);
+
+        AccountingEntry::factory()->ingreso()->create(['user_id' => $user->id, 'tenant_id' => $user->tenant_id]);
+        AccountingEntry::factory()->egreso()->create(['user_id' => $user->id, 'tenant_id' => $user->tenant_id]);
 
         Livewire::actingAs($user)
             ->test(Index::class)
@@ -87,8 +88,10 @@ class AccountingEntryManagementTest extends TestCase
 
     public function test_it_deletes_an_entry(): void
     {
-        $user = User::factory()->create();
-        $entry = AccountingEntry::factory()->create(['user_id' => $user->id]);
+        $user = $this->createUserWithTenant();
+        $this->actingAsWithTenant($user);
+
+        $entry = AccountingEntry::factory()->create(['user_id' => $user->id, 'tenant_id' => $user->tenant_id]);
 
         Livewire::actingAs($user)
             ->test(Index::class)

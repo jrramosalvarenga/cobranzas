@@ -16,6 +16,10 @@ class EnsureUserRole
     {
         $userRole = $request->user()?->role;
 
+        if ($userRole === UserRole::SuperAdmin) {
+            return $next($request);
+        }
+
         foreach ($roles as $role) {
             if ($userRole === UserRole::from($role)) {
                 return $next($request);

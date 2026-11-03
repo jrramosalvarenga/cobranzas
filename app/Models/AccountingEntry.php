@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AccountingEntry extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     public const CATEGORIAS_INGRESO = [
         'Venta de agua',
@@ -31,6 +32,7 @@ class AccountingEntry extends Model
     ];
 
     protected $fillable = [
+        'tenant_id',
         'type',
         'category',
         'description',

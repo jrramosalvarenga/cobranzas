@@ -40,7 +40,7 @@ new class extends Component
                     <x-nav-link :href="route('constancias.index')" :active="request()->routeIs('constancias.*')" wire:navigate>
                         {{ __('Constancias') }}
                     </x-nav-link>
-                    @if(auth()->user()->isAdmin())
+                    @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
                     <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
                         {{ __('Clientes') }}
                     </x-nav-link>
@@ -60,11 +60,25 @@ new class extends Component
                         {{ __('Usuarios') }}
                     </x-nav-link>
                     @endif
+                    @if(auth()->user()->isSuperAdmin())
+                    <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
+                        {{ __('Organizaciones') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                @if(auth()->user()->tenant)
+                    <span class="text-xs text-gray-500 dark:text-gray-400 mr-3 px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
+                        {{ auth()->user()->tenant->name }}
+                    </span>
+                @elseif(auth()->user()->isSuperAdmin() && session('tenant_id'))
+                    <span class="text-xs text-indigo-600 dark:text-indigo-400 mr-3 px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 rounded">
+                        {{ \App\Models\Tenant::find(session('tenant_id'))?->name }}
+                    </span>
+                @endif
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
@@ -117,7 +131,7 @@ new class extends Component
             <x-responsive-nav-link :href="route('constancias.index')" :active="request()->routeIs('constancias.*')" wire:navigate>
                 {{ __('Constancias') }}
             </x-responsive-nav-link>
-            @if(auth()->user()->isAdmin())
+            @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
             <x-responsive-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
                 {{ __('Clientes') }}
             </x-responsive-nav-link>
@@ -135,6 +149,11 @@ new class extends Component
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" wire:navigate>
                 {{ __('Usuarios') }}
+            </x-responsive-nav-link>
+            @endif
+            @if(auth()->user()->isSuperAdmin())
+            <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
+                {{ __('Organizaciones') }}
             </x-responsive-nav-link>
             @endif
         </div>

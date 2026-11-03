@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'tenant_id',
         'cuota_id',
         'user_id',
         'receipt_number',
