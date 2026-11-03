@@ -3,6 +3,7 @@
 namespace App\Livewire\Usuarios;
 
 use App\Enums\UserRole;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -30,6 +31,8 @@ class Index extends Component
 
     public string $role = 'cobrador';
 
+    public ?int $tenant_id = null;
+
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -49,6 +52,7 @@ class Index extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->role = $user->role->value;
+        $this->tenant_id = $user->tenant_id;
         $this->password = '';
         $this->password_confirmation = '';
         $this->showModal = true;
@@ -61,6 +65,10 @@ class Index extends Component
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->editingId)],
             'role' => ['required', new Enum(UserRole::class)],
         ];
+
+        if (auth()->user()->isSuperAdmin()) {
+            $rules['tenant_id'] = 'required|exists:tenants,id';
+        }
 
         if ($this->editingId) {
             $rules['password'] = 'nullable|string|min:6|confirmed';
@@ -76,12 +84,16 @@ class Index extends Component
             'role' => $data['role'],
         ];
 
+        if (auth()->user()->isSuperAdmin() && isset($data['tenant_id'])) {
+            $userData['tenant_id'] = $data['tenant_id'];
+        }
+
         if (! empty($data['password'])) {
             $userData['password'] = bcrypt($data['password']);
         }
 
         if ($this->editingId) {
-            User::findOrFail($this->editingId)->update($userData);
+            User::withoutGlobalScopes()->findOrFail($this->editingId)->update($userData);
         } else {
             $userData['email_verified_at'] = now();
             User::create($userData);
@@ -102,19 +114,26 @@ class Index extends Component
 
     public function resetForm(): void
     {
-        $this->reset(['editingId', 'name', 'email', 'password', 'password_confirmation', 'role']);
+        $this->reset(['editingId', 'name', 'email', 'password', 'password_confirmation', 'role', 'tenant_id']);
         $this->resetErrorBag();
     }
 
     #[Layout('layouts.app')]
     public function render()
     {
+        $query = auth()->user()->isSuperAdmin()
+            ? User::withoutGlobalScopes()->with('tenant')
+            : User::query();
+
         return view('livewire.usuarios.index', [
-            'usuarios' => User::query()
+            'usuarios' => $query
                 ->when($this->search, fn ($q) => $q->where('name', 'ilike', "%{$this->search}%")
                     ->orWhere('email', 'ilike', "%{$this->search}%"))
                 ->orderBy('name')
                 ->paginate(10),
+            'tenants' => auth()->user()->isSuperAdmin()
+                ? Tenant::orderBy('name')->get()
+                : collect(),
         ]);
     }
 }

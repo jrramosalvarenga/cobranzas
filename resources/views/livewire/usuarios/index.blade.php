@@ -31,6 +31,9 @@
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            @if (auth()->user()->isSuperAdmin())
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Organización</th>
+                            @endif
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Rol</th>
                         </tr>
                     </thead>
@@ -39,13 +42,18 @@
                             <tr>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $usuario->name }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $usuario->email }}</td>
+                                @if (auth()->user()->isSuperAdmin())
+                                    <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $usuario->tenant?->name ?? '—' }}</td>
+                                @endif
                                 <td class="px-4 py-3 text-sm">
                                     @php
                                         $badge = match ($usuario->role->value) {
+                                            'super_admin' => 'bg-red-100 text-red-800',
                                             'admin' => 'bg-purple-100 text-purple-800',
                                             default => 'bg-blue-100 text-blue-800',
                                         };
                                         $label = match ($usuario->role->value) {
+                                            'super_admin' => 'Super Admin',
                                             'admin' => 'Administrador',
                                             default => 'Cobrador',
                                         };
@@ -61,7 +69,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-4 py-6 text-center text-sm text-gray-500">Sin usuarios registrados.</td>
+                                <td colspan="{{ auth()->user()->isSuperAdmin() ? 5 : 4 }}" class="px-4 py-6 text-center text-sm text-gray-500">Sin usuarios registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -94,9 +102,25 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
+                    @if (auth()->user()->isSuperAdmin())
+                        <div>
+                            <x-input-label for="tenant_id" value="Organización" />
+                            <select wire:model="tenant_id" id="tenant_id" class="block mt-1 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm">
+                                <option value="">Seleccionar...</option>
+                                @foreach ($tenants as $tenant)
+                                    <option value="{{ $tenant->id }}">{{ $tenant->name }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('tenant_id')" class="mt-2" />
+                        </div>
+                    @endif
+
                     <div>
                         <x-input-label for="role" value="Rol" />
                         <select wire:model="role" id="role" class="block mt-1 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 shadow-sm">
+                            @if (auth()->user()->isSuperAdmin())
+                                <option value="super_admin">Super Admin</option>
+                            @endif
                             <option value="admin">Administrador</option>
                             <option value="cobrador">Cobrador</option>
                         </select>
