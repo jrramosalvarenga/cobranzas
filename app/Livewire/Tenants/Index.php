@@ -57,9 +57,13 @@ class Index extends Component
 
     public function save(): void
     {
+        $uniqueSlug = $this->editingId
+            ? 'unique:tenants,slug,'.$this->editingId
+            : 'unique:tenants,slug';
+
         $data = $this->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:tenants,slug,'.$this->editingId,
+            'slug' => ['required', 'string', 'max:255', $uniqueSlug],
             'active' => 'boolean',
         ]);
 
