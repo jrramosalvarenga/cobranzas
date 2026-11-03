@@ -179,7 +179,14 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-900">
                                 <tr>
-                                    <th class="px-4 py-2"></th>
+                                    <th class="px-4 py-2">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" wire:click="seleccionarTodo"
+                                                @checked($cuotasPendientes->isNotEmpty() && $cuotasPendientes->every(fn ($c) => !empty($seleccion[$c->id])))
+                                                class="rounded border-gray-300 text-indigo-600 shadow-sm">
+                                            <span class="text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Todo</span>
+                                        </label>
+                                    </th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Servicio</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Periodo</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Saldo</th>

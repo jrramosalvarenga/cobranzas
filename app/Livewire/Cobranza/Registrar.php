@@ -125,6 +125,25 @@ class Registrar extends Component
         $this->montos[$cuotaId] = $cuota->saldo();
     }
 
+    public function seleccionarTodo(): void
+    {
+        $cuotas = Cuota::whereHas('contract', fn ($q) => $q->where('client_id', $this->selectedClientId))
+            ->whereIn('status', ['pendiente', 'vencida'])
+            ->get();
+
+        $allSelected = $cuotas->every(fn ($c) => ! empty($this->seleccion[$c->id]));
+
+        if ($allSelected) {
+            $this->seleccion = [];
+            $this->montos = [];
+        } else {
+            foreach ($cuotas as $cuota) {
+                $this->seleccion[$cuota->id] = true;
+                $this->montos[$cuota->id] = $cuota->saldo();
+            }
+        }
+    }
+
     public function confirmarPago(): void
     {
         $this->error = null;
