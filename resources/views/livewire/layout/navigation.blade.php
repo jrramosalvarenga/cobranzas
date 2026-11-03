@@ -30,7 +30,7 @@ new class extends Component
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden sm:-my-px sm:ms-6 sm:flex sm:space-x-4 lg:space-x-6 overflow-x-auto scrollbar-hide">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -69,16 +69,7 @@ new class extends Component
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                @if(auth()->user()->tenant)
-                    <span class="text-xs text-white/80 mr-3 px-2 py-1 bg-white/15 rounded">
-                        {{ auth()->user()->tenant->name }}
-                    </span>
-                @elseif(auth()->user()->isSuperAdmin() && session('tenant_id'))
-                    <span class="text-xs text-yellow-200 mr-3 px-2 py-1 bg-white/15 rounded">
-                        {{ \App\Models\Tenant::find(session('tenant_id'))?->name }}
-                    </span>
-                @endif
+            <div class="hidden sm:flex sm:items-center sm:ms-4 shrink-0">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-white/20 text-sm leading-4 font-medium rounded-md text-white/90 bg-white/10 hover:bg-white/20 hover:text-white focus:outline-none transition ease-in-out duration-150">
