@@ -39,7 +39,7 @@ new class extends Component
                         @else
                             <x-application-logo class="block h-8 w-8" />
                         @endif
-                        <span class="hidden sm:block font-semibold text-white">{{ $navTenant?->name ?? config('app.name') }}</span>
+                        <span class="hidden sm:block font-semibold text-white">{{ config('app.name') }}</span>
                     </a>
                 </div>
 
