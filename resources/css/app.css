@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .btn-animate {
+        @apply transition-all duration-200 ease-out;
+    }
+    .btn-animate:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .btn-animate:active {
+        transform: translateY(0);
+    }
+    .card-hover {
+        @apply transition-all duration-300 ease-out;
+    }
+    .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+}

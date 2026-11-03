@@ -3,7 +3,7 @@
 <button
     type="button"
     id="tour-btn-{{ $id }}"
-    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition"
+    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white/80 bg-white/15 rounded-full hover:bg-white/25 hover:text-white transition"
     title="Iniciar tour"
 >
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
