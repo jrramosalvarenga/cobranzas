@@ -27,6 +27,23 @@ class Tenant extends Model
         ];
     }
 
+    public function logoUrl(): ?string
+    {
+        $path = $this->settings['logo'] ?? null;
+
+        return $path ? asset('storage/'.$path) : null;
+    }
+
+    public function primaryColor(): string
+    {
+        return $this->settings['primary_color'] ?? '#0f2a4a';
+    }
+
+    public function secondaryColor(): string
+    {
+        return $this->settings['secondary_color'] ?? '#0d7c5f';
+    }
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

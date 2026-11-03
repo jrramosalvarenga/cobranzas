@@ -102,6 +102,44 @@
                         <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Organización activa</span>
                     </label>
 
+                    <hr class="border-gray-200 dark:border-gray-700">
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Personalización</h3>
+
+                    <div>
+                        <x-input-label for="logo" value="Logo" />
+                        @if($currentLogoUrl && !$removeLogo)
+                            <div class="mt-1 flex items-center gap-3">
+                                <img src="{{ $currentLogoUrl }}" alt="Logo" class="h-12 w-12 rounded object-cover">
+                                <button type="button" wire:click="$set('removeLogo', true)" class="text-xs text-red-600 hover:underline">Quitar logo</button>
+                            </div>
+                        @endif
+                        <input wire:model="logo" type="file" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        <x-input-error :messages="$errors->get('logo')" class="mt-2" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="primary_color" value="Color primario" />
+                            <div class="flex items-center gap-2 mt-1">
+                                <input wire:model="primary_color" type="color" id="primary_color" class="h-10 w-14 rounded border border-gray-300 cursor-pointer">
+                                <x-text-input wire:model="primary_color" class="w-full font-mono text-sm" maxlength="7" />
+                            </div>
+                            <x-input-error :messages="$errors->get('primary_color')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="secondary_color" value="Color secundario" />
+                            <div class="flex items-center gap-2 mt-1">
+                                <input wire:model="secondary_color" type="color" id="secondary_color" class="h-10 w-14 rounded border border-gray-300 cursor-pointer">
+                                <x-text-input wire:model="secondary_color" class="w-full font-mono text-sm" maxlength="7" />
+                            </div>
+                            <x-input-error :messages="$errors->get('secondary_color')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg p-3 text-white text-sm font-medium text-center" style="background: linear-gradient(to right, {{ $primary_color }}, {{ $secondary_color }})">
+                        Vista previa del encabezado
+                    </div>
+
                     <div class="flex justify-end gap-2 pt-2">
                         <x-secondary-button type="button" wire:click="$set('showModal', false)">Cancelar</x-secondary-button>
                         <x-primary-button type="submit">Guardar</x-primary-button>

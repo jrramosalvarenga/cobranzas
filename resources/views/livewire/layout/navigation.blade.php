@@ -16,7 +16,17 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-gradient-to-r from-[#0f2a4a] to-[#0d7c5f] shadow-md">
+@php
+    $navTenant = auth()->user()?->tenant
+        ?? (auth()->user()?->isSuperAdmin() && session('tenant_id')
+            ? \App\Models\Tenant::find(session('tenant_id'))
+            : null);
+    $navFrom = $navTenant?->primaryColor() ?? '#0f2a4a';
+    $navTo = $navTenant?->secondaryColor() ?? '#0d7c5f';
+    $navLogo = $navTenant?->logoUrl();
+@endphp
+
+<nav x-data="{ open: false }" class="shadow-md" style="background: linear-gradient(to right, {{ $navFrom }}, {{ $navTo }})">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -24,8 +34,12 @@ new class extends Component
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center gap-2">
                     <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2">
-                        <x-application-logo class="block h-8 w-8" />
-                        <span class="hidden sm:block font-semibold text-white">{{ config('app.name') }}</span>
+                        @if($navLogo)
+                            <img src="{{ $navLogo }}" alt="Logo" class="block h-8 w-8 rounded object-cover">
+                        @else
+                            <x-application-logo class="block h-8 w-8" />
+                        @endif
+                        <span class="hidden sm:block font-semibold text-white">{{ $navTenant?->name ?? config('app.name') }}</span>
                     </a>
                 </div>
 

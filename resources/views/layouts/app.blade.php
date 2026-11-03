@@ -24,24 +24,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
     </head>
     <body class="font-sans antialiased">
+        @php
+            $activeTenant = null;
+            if (auth()->check()) {
+                $activeTenant = auth()->user()->tenant
+                    ?? (auth()->user()->isSuperAdmin() && session('tenant_id')
+                        ? \App\Models\Tenant::find(session('tenant_id'))
+                        : null);
+            }
+            $brandFrom = $activeTenant?->primaryColor() ?? '#0f2a4a';
+            $brandTo = $activeTenant?->secondaryColor() ?? '#0d7c5f';
+        @endphp
         <div class="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-emerald-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
             <livewire:layout.navigation />
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-gradient-to-r from-[#0f2a4a] to-[#0d7c5f] shadow-md">
+                <header class="shadow-md" style="background: linear-gradient(to right, {{ $brandFrom }}, {{ $brandTo }})">
                     <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 text-white">
-                        @auth
-                            @php
-                                $tenantName = auth()->user()->tenant?->name
-                                    ?? (auth()->user()->isSuperAdmin() && session('tenant_id')
-                                        ? \App\Models\Tenant::find(session('tenant_id'))?->name
-                                        : null);
-                            @endphp
-                            @if($tenantName)
-                                <p class="text-sm text-white/70 mb-1">{{ $tenantName }}</p>
-                            @endif
-                        @endauth
+                        @if($activeTenant)
+                            <p class="text-sm text-white/70 mb-1">{{ $activeTenant->name }}</p>
+                        @endif
                         {{ $header }}
                     </div>
                 </header>
