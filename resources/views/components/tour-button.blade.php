@@ -12,7 +12,7 @@
             nextBtnText: 'Siguiente',
             prevBtnText: 'Anterior',
             doneBtnText: 'Finalizar',
-            progressText: 'Paso {{current}} de {{total}}',
+            progressText: 'Paso @{{current}} de @{{total}}',
             steps: steps.map(s => ({
                 element: s.element || undefined,
                 popover: {
