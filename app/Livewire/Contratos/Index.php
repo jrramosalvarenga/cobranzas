@@ -5,6 +5,7 @@ namespace App\Livewire\Contratos;
 use App\Models\Client;
 use App\Models\Contract;
 use App\Models\Cuota;
+use App\Models\Scopes\TenantScope;
 use App\Models\ServiceType;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
@@ -66,7 +67,10 @@ class Index extends Component
     public function create(): void
     {
         $this->resetForm();
-        $this->contract_number = 'C-'.str_pad((string) ((Contract::withoutGlobalScopes()->max('id') ?? 0) + 100), 5, '0', STR_PAD_LEFT);
+        $tenantId = TenantScope::currentTenantId();
+        $this->contract_number = $tenantId
+            ? Contract::generateContractNumber($tenantId)
+            : 'C-00001';
         $this->start_date = now()->toDateString();
         $this->showModal = true;
     }

@@ -30,18 +30,26 @@ class Contract extends Model
     protected static function booted(): void
     {
         static::creating(function (Contract $contract) {
-            if (blank($contract->contract_number)) {
-                $next = (self::withoutGlobalScopes()->max('id') ?? 0) + 1;
-                $contract->contract_number = 'C-'.str_pad((string) ($next + 99), 5, '0', STR_PAD_LEFT);
+            if (blank($contract->contract_number) && $contract->tenant_id) {
+                $contract->contract_number = static::generateContractNumber($contract->tenant_id);
             }
         });
+    }
 
-        static::created(function (Contract $contract) {
-            $expected = 'C-'.str_pad((string) ($contract->id + 99), 5, '0', STR_PAD_LEFT);
-            if ($contract->contract_number !== $expected) {
-                $contract->updateQuietly(['contract_number' => $expected]);
-            }
-        });
+    public static function generateContractNumber(int $tenantId): string
+    {
+        $tenant = Tenant::find($tenantId);
+        $prefix = $tenant ? strtoupper($tenant->slug) : 'SIN';
+
+        $last = self::withoutGlobalScopes()
+            ->where('tenant_id', $tenantId)
+            ->where('contract_number', 'like', $prefix.'-%')
+            ->orderByDesc('contract_number')
+            ->value('contract_number');
+
+        $lastNumber = $last ? (int) str_replace($prefix.'-', '', $last) : 0;
+
+        return $prefix.'-'.str_pad((string) ($lastNumber + 1), 5, '0', STR_PAD_LEFT);
     }
 
     protected function casts(): array
