@@ -31,6 +31,17 @@
             @if (isset($header))
                 <header class="bg-gradient-to-r from-[#0f2a4a] to-[#0d7c5f] shadow-md">
                     <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 text-white">
+                        @auth
+                            @php
+                                $tenantName = auth()->user()->tenant?->name
+                                    ?? (auth()->user()->isSuperAdmin() && session('tenant_id')
+                                        ? \App\Models\Tenant::find(session('tenant_id'))?->name
+                                        : null);
+                            @endphp
+                            @if($tenantName)
+                                <p class="text-sm text-white/70 mb-1">{{ $tenantName }}</p>
+                            @endif
+                        @endauth
                         {{ $header }}
                     </div>
                 </header>
