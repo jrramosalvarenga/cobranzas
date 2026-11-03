@@ -2,7 +2,29 @@
 
 <button
     type="button"
-    id="tour-btn-{{ $id }}"
+    x-data
+    x-on:click="
+        if (typeof driver === 'undefined') return;
+        const steps = {{ Js::from($steps) }};
+        const driverObj = driver.js.driver({
+            showProgress: true,
+            animate: true,
+            nextBtnText: 'Siguiente',
+            prevBtnText: 'Anterior',
+            doneBtnText: 'Finalizar',
+            progressText: 'Paso {{current}} de {{total}}',
+            steps: steps.map(s => ({
+                element: s.element || undefined,
+                popover: {
+                    title: s.title,
+                    description: s.description,
+                    side: s.side || 'bottom',
+                    align: s.align || 'start',
+                }
+            }))
+        });
+        driverObj.drive();
+    "
     class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white/80 bg-white/15 rounded-full hover:bg-white/25 hover:text-white transition"
     title="Iniciar tour"
 >
@@ -11,35 +33,3 @@
     </svg>
     Ayuda
 </button>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const btn = document.getElementById('tour-btn-{{ $id }}');
-    if (!btn || typeof driver === 'undefined') return;
-
-    const steps = @json($steps);
-
-    btn.addEventListener('click', function () {
-        const driverObj = driver.js.driver({
-            showProgress: true,
-            animate: true,
-            nextBtnText: 'Siguiente',
-            prevBtnText: 'Anterior',
-            doneBtnText: 'Finalizar',
-            progressText: 'Paso @{{current}} de @{{total}}',
-            steps: steps.map(function (s) {
-                return {
-                    element: s.element || undefined,
-                    popover: {
-                        title: s.title,
-                        description: s.description,
-                        side: s.side || 'bottom',
-                        align: s.align || 'start',
-                    }
-                };
-            })
-        });
-        driverObj.drive();
-    });
-});
-</script>
