@@ -19,19 +19,15 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Organización Principal', 'active' => true]
         );
 
-        $admin = User::withoutGlobalScopes()->firstOrCreate(
+        $admin = User::withoutGlobalScopes()->updateOrCreate(
             ['email' => 'juanrra2013@gmail.com'],
             [
-                'name' => 'Administrador',
-                'password' => Hash::make('cobranzas123'),
+                'name' => 'Juan Ramon Ramos',
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
                 'email_verified_at' => now(),
-                'role' => 'admin',
+                'role' => 'super_admin',
                 'tenant_id' => $tenant->id,
             ]
         );
-
-        if (! $admin->tenant_id) {
-            $admin->update(['tenant_id' => $tenant->id]);
-        }
     }
 }
