@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\ConstanciaAbonadoPdfController;
 use App\Http\Controllers\EstadoResultadosPdfController;
 use App\Http\Controllers\MorososPdfController;
@@ -58,5 +59,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('usuarios', Usuarios\Index::class)->name('usuarios.index');
     });
 });
+
+Route::get('auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('auth/google/callback', [GoogleController::class, 'callback']);
 
 require __DIR__.'/auth.php';
