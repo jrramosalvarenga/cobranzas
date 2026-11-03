@@ -5,6 +5,7 @@ namespace App\Livewire\Cobranza;
 use App\Models\Client;
 use App\Models\Cuota;
 use App\Models\Payment;
+use App\Models\Scopes\TenantScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -164,7 +165,10 @@ class Registrar extends Component
         $cuotaIds = array_keys(array_filter($this->seleccion));
         $cuotas = Cuota::whereIn('id', $cuotaIds)->get()->keyBy('id');
 
-        $receiptNumber = 'R-'.str_pad((string) (Payment::max('id') + 1), 6, '0', STR_PAD_LEFT);
+        $tenantId = TenantScope::currentTenantId();
+        $receiptNumber = $tenantId
+            ? Payment::generateReceiptNumber($tenantId)
+            : 'R-'.str_pad((string) (Payment::withoutGlobalScopes()->max('id') + 1), 6, '0', STR_PAD_LEFT);
 
         DB::transaction(function () use ($cuotaIds, $cuotas, $receiptNumber) {
             foreach ($cuotaIds as $cuotaId) {

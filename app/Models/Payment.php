@@ -33,6 +33,22 @@ class Payment extends Model
         ];
     }
 
+    public static function generateReceiptNumber(int $tenantId): string
+    {
+        $tenant = Tenant::find($tenantId);
+        $prefix = $tenant ? strtoupper($tenant->slug) : 'SIN';
+
+        $last = self::withoutGlobalScopes()
+            ->where('tenant_id', $tenantId)
+            ->where('receipt_number', 'like', $prefix.'-R%')
+            ->orderByDesc('receipt_number')
+            ->value('receipt_number');
+
+        $lastNumber = $last ? (int) str_replace($prefix.'-R', '', $last) : 0;
+
+        return $prefix.'-R'.str_pad((string) ($lastNumber + 1), 5, '0', STR_PAD_LEFT);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->whereNull('reversed_at');
