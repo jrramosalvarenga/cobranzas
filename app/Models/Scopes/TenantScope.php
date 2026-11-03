@@ -11,6 +11,8 @@ class TenantScope implements Scope
 {
     private static ?int $override = null;
 
+    private static bool $resolving = false;
+
     public function apply(Builder $builder, Model $model): void
     {
         $tenantId = static::currentTenantId();
@@ -26,17 +28,27 @@ class TenantScope implements Scope
             return static::$override;
         }
 
-        $user = auth()->user();
-
-        if (! $user) {
+        if (static::$resolving) {
             return null;
         }
 
-        if ($user->role === UserRole::SuperAdmin) {
-            return session('tenant_id');
-        }
+        static::$resolving = true;
 
-        return $user->tenant_id;
+        try {
+            $user = auth()->user();
+
+            if (! $user) {
+                return null;
+            }
+
+            if ($user->role === UserRole::SuperAdmin) {
+                return session('tenant_id');
+            }
+
+            return $user->tenant_id;
+        } finally {
+            static::$resolving = false;
+        }
     }
 
     public static function setOverride(?int $tenantId): void
