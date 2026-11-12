@@ -22,6 +22,8 @@ class Index extends Component
 
     public ?string $message = null;
 
+    public ?string $deleteError = null;
+
     public function mount(): void
     {
         $this->year = now()->year;
@@ -46,6 +48,20 @@ class Index extends Component
     public function updatingMonth(): void
     {
         $this->resetPage();
+    }
+
+    public function delete(int $id): void
+    {
+        $cuota = Cuota::withCount('payments')->findOrFail($id);
+
+        if ($cuota->payments_count > 0) {
+            $this->deleteError = 'No se puede eliminar una cuota que tiene pagos registrados.';
+
+            return;
+        }
+
+        $cuota->delete();
+        $this->message = 'Cuota eliminada correctamente.';
     }
 
     public function generar(CuotaGenerator $generator): void

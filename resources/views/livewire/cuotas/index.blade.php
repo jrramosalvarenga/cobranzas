@@ -70,6 +70,12 @@
                 </div>
             @endif
 
+            @if ($deleteError)
+                <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-md text-sm">
+                    {{ $deleteError }}
+                </div>
+            @endif
+
             <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden overflow-x-auto">
                 <table id="cuotas-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
@@ -81,6 +87,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Saldo</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Vence</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                            <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -110,10 +117,13 @@
                                     @endphp
                                     <span class="px-2 py-1 text-xs rounded-full {{ $badge }}">{{ $label }}</span>
                                 </td>
+                                <td class="px-4 py-3 text-sm text-right">
+                                    <button wire:click="delete({{ $cuota->id }})" wire:confirm="¿Eliminar esta cuota?" class="text-red-600 hover:underline">Eliminar</button>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-4 py-6 text-center text-sm text-gray-500">No hay cuotas para este periodo.</td>
+                                <td colspan="8" class="px-4 py-6 text-center text-sm text-gray-500">No hay cuotas para este periodo.</td>
                             </tr>
                         @endforelse
                     </tbody>
