@@ -141,8 +141,8 @@
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                         @forelse ($ultimosPagos as $pago)
                             <tr>
-                                <td class="px-5 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $pago->cuota->contract->client->full_name }}</td>
-                                <td class="px-5 py-3 text-sm text-gray-500">{{ $pago->cuota->contract->serviceType->name }} &middot; {{ $pago->cuota->periodLabel() }}</td>
+                                <td class="px-5 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $pago->cuota?->contract?->client?->full_name ?? '—' }}</td>
+                                <td class="px-5 py-3 text-sm text-gray-500">{{ $pago->cuota?->contract?->serviceType?->name ?? '' }} &middot; {{ $pago->cuota?->periodLabel() }}</td>
                                 <td class="px-5 py-3 text-sm text-gray-500">{{ $pago->payment_date->format('d/m/Y') }}</td>
                                 <td class="px-5 py-3 text-sm font-medium text-gray-900 dark:text-gray-200 text-right">{{ config('cobranzas.currency_symbol') }} {{ number_format($pago->amount, 2) }}</td>
                             </tr>
