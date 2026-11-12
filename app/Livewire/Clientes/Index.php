@@ -3,6 +3,7 @@
 namespace App\Livewire\Clientes;
 
 use App\Models\Client;
+use App\Models\Scopes\TenantScope;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -76,7 +77,7 @@ class Index extends Component
     {
         $data = $this->validate([
             'full_name' => 'required|string|max:255',
-            'document_number' => ['required', 'string', 'max:50', Rule::unique('clients', 'document_number')->ignore($this->editingId)],
+            'document_number' => ['required', 'string', 'max:50', Rule::unique('clients', 'document_number')->where('tenant_id', TenantScope::currentTenantId())->ignore($this->editingId)],
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
             'address_line' => 'required|string|max:255',
