@@ -32,6 +32,7 @@
                             <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Usuarios</th>
                             <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Clientes</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Vigencia</th>
                             <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                         </tr>
                     </thead>
@@ -54,6 +55,19 @@
                                         <span class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">Inactiva</span>
                                     @endif
                                 </td>
+                                <td class="px-4 py-3 text-sm">
+                                    @if ($tenant->license_expires_at)
+                                        @if ($tenant->licenseExpired())
+                                            <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Vencida {{ $tenant->license_expires_at->format('d/m/Y') }}</span>
+                                        @elseif ($tenant->licenseExpiresSoon())
+                                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">{{ $tenant->licenseDaysRemaining() }} d - {{ $tenant->license_expires_at->format('d/m/Y') }}</span>
+                                        @else
+                                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{{ $tenant->license_expires_at->format('d/m/Y') }}</span>
+                                        @endif
+                                    @else
+                                        <span class="text-xs text-gray-400">Sin fecha</span>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-sm text-right space-x-2">
                                     @if ($tenant->id !== $currentTenantId)
                                         <button wire:click="switchTenant({{ $tenant->id }})" class="text-green-600 hover:underline">Entrar</button>
@@ -64,7 +78,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-6 text-center text-sm text-gray-500">Sin organizaciones registradas.</td>
+                                <td colspan="7" class="px-4 py-6 text-center text-sm text-gray-500">Sin organizaciones registradas.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -97,10 +111,17 @@
                         <x-input-error :messages="$errors->get('slug')" class="mt-2" />
                     </div>
 
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" wire:model="active" class="rounded border-gray-300 text-indigo-600 shadow-sm">
-                        <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Organización activa</span>
-                    </label>
+                    <div class="grid grid-cols-2 gap-4 items-end">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" wire:model="active" class="rounded border-gray-300 text-indigo-600 shadow-sm">
+                            <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Organización activa</span>
+                        </label>
+                        <div>
+                            <x-input-label for="license_expires_at" value="Vigencia de licencia" />
+                            <x-text-input wire:model="license_expires_at" id="license_expires_at" type="date" class="block mt-1 w-full" />
+                            <x-input-error :messages="$errors->get('license_expires_at')" class="mt-2" />
+                        </div>
+                    </div>
 
                     <hr class="border-gray-200 dark:border-gray-700">
                     <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Información para documentos</h3>

@@ -17,6 +17,7 @@ class Tenant extends Model
         'slug',
         'settings',
         'active',
+        'license_expires_at',
     ];
 
     protected function casts(): array
@@ -24,7 +25,36 @@ class Tenant extends Model
         return [
             'settings' => 'array',
             'active' => 'boolean',
+            'license_expires_at' => 'date',
         ];
+    }
+
+    public function licenseExpired(): bool
+    {
+        return $this->license_expires_at !== null && $this->license_expires_at->isPast();
+    }
+
+    public function licenseExpiresSoon(): bool
+    {
+        if ($this->license_expires_at === null) {
+            return false;
+        }
+
+        return ! $this->license_expires_at->isPast()
+            && $this->license_expires_at->diffInDays(now()) <= 30;
+    }
+
+    public function licenseDaysRemaining(): ?int
+    {
+        if ($this->license_expires_at === null) {
+            return null;
+        }
+
+        if ($this->license_expires_at->isPast()) {
+            return 0;
+        }
+
+        return (int) now()->diffInDays($this->license_expires_at);
     }
 
     public function logoUrl(): ?string

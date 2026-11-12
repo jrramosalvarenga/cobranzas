@@ -38,6 +38,8 @@
         <div class="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-emerald-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
             <livewire:layout.navigation />
 
+            <x-license-banner />
+
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="shadow-md" style="background: linear-gradient(to right, {{ $brandFrom }}, {{ $brandTo }})">

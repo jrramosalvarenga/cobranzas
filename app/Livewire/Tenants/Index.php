@@ -49,6 +49,8 @@ class Index extends Component
 
     public string $slogan = '';
 
+    public ?string $license_expires_at = '';
+
     public ?string $deleteError = null;
 
     public function updatingSearch(): void
@@ -84,6 +86,7 @@ class Index extends Component
         $this->company_name = $tenant->settings['company_name'] ?? '';
         $this->address = $tenant->settings['address'] ?? '';
         $this->slogan = $tenant->settings['slogan'] ?? '';
+        $this->license_expires_at = $tenant->license_expires_at?->format('Y-m-d') ?? '';
         $this->showModal = true;
     }
 
@@ -104,6 +107,7 @@ class Index extends Component
             'company_name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'slogan' => 'nullable|string|max:255',
+            'license_expires_at' => 'nullable|date',
         ]);
 
         $data['slug'] = Str::slug($data['slug']);
@@ -112,6 +116,7 @@ class Index extends Component
             'name' => $data['name'],
             'slug' => $data['slug'],
             'active' => $data['active'],
+            'license_expires_at' => $data['license_expires_at'] ?: null,
         ]);
 
         $settings = $tenant->settings ?? [];
@@ -174,7 +179,7 @@ class Index extends Component
 
     public function resetForm(): void
     {
-        $this->reset(['editingId', 'name', 'slug', 'active', 'primary_color', 'secondary_color', 'logo', 'currentLogoUrl', 'removeLogo', 'logo_secondary', 'currentLogoSecondaryUrl', 'removeLogoSecondary', 'company_name', 'address', 'slogan']);
+        $this->reset(['editingId', 'name', 'slug', 'active', 'primary_color', 'secondary_color', 'logo', 'currentLogoUrl', 'removeLogo', 'logo_secondary', 'currentLogoSecondaryUrl', 'removeLogoSecondary', 'company_name', 'address', 'slogan', 'license_expires_at']);
         $this->active = true;
         $this->primary_color = '#0f2a4a';
         $this->secondary_color = '#0d7c5f';
