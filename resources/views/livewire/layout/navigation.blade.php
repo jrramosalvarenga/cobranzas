@@ -44,7 +44,32 @@ new class extends Component
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden sm:-my-px sm:ms-6 sm:flex sm:space-x-4 lg:space-x-6 overflow-x-auto scrollbar-hide">
+                <div class="hidden sm:-my-px sm:ms-6 sm:flex sm:items-center sm:space-x-4 lg:space-x-6 overflow-x-auto scrollbar-hide">
+                    @if(auth()->user()->isSuperAdmin())
+                    <x-dropdown align="left" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center gap-1 px-2 py-1 border-b-2 {{ request()->routeIs('tenants.*') || request()->routeIs('admin.servicios.*') ? 'border-white text-white' : 'border-transparent text-yellow-200 hover:text-white hover:border-white/50' }} text-sm font-semibold leading-5 focus:outline-none transition duration-150 ease-in-out">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg>
+                                Admin
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('tenants.index')" wire:navigate>
+                                Organizaciones
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.servicios.index')" wire:navigate>
+                                Servicios (Admin)
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                    @if($navTenant)
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 text-xs font-medium text-white" title="Tenant activo">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        {{ $navTenant->name }}
+                    </span>
+                    @endif
+                    @endif
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -72,14 +97,6 @@ new class extends Component
                     </x-nav-link>
                     <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" wire:navigate>
                         {{ __('Usuarios') }}
-                    </x-nav-link>
-                    @endif
-                    @if(auth()->user()->isSuperAdmin())
-                    <x-nav-link :href="route('admin.servicios.index')" :active="request()->routeIs('admin.servicios.*')" wire:navigate>
-                        {{ __('Servicios (Admin)') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
-                        {{ __('Organizaciones') }}
                     </x-nav-link>
                     @endif
                 </div>
@@ -130,6 +147,27 @@ new class extends Component
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            @if(auth()->user()->isSuperAdmin())
+            <div class="px-4 py-2 border-b border-white/20">
+                <span class="text-xs font-semibold text-yellow-200 uppercase tracking-wider">Administración</span>
+            </div>
+            <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
+                {{ __('Organizaciones') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.servicios.index')" :active="request()->routeIs('admin.servicios.*')" wire:navigate>
+                {{ __('Servicios (Admin)') }}
+            </x-responsive-nav-link>
+            @if($navTenant)
+            <div class="px-4 py-1">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 text-xs font-medium text-white">
+                    Tenant: {{ $navTenant->name }}
+                </span>
+            </div>
+            @endif
+            <div class="px-4 py-2 border-b border-white/20">
+                <span class="text-xs font-semibold text-white/50 uppercase tracking-wider">Operaciones</span>
+            </div>
+            @endif
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
@@ -157,14 +195,6 @@ new class extends Component
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" wire:navigate>
                 {{ __('Usuarios') }}
-            </x-responsive-nav-link>
-            @endif
-            @if(auth()->user()->isSuperAdmin())
-            <x-responsive-nav-link :href="route('admin.servicios.index')" :active="request()->routeIs('admin.servicios.*')" wire:navigate>
-                {{ __('Servicios (Admin)') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
-                {{ __('Organizaciones') }}
             </x-responsive-nav-link>
             @endif
         </div>

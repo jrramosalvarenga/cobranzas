@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureTenantSelected;
 use App\Http\Middleware\EnsureUserRole;
 use App\Http\Middleware\SetCurrentTenant;
 use Illuminate\Foundation\Application;
@@ -18,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => EnsureUserRole::class,
+            'tenant.selected' => EnsureTenantSelected::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

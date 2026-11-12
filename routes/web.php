@@ -27,38 +27,40 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', Dashboard\Index::class)->name('dashboard');
-
     Route::view('profile', 'profile')->name('profile');
 
-    // Cobranza — accesible para admin y cobrador
-    Route::get('cobranza', Cobranza\Registrar::class)->name('cobranza.registrar');
-    Route::get('cobranza/historial', Cobranza\HistorialCliente::class)->name('cobranza.historial');
-    Route::get('cobranza/morosos', Cobranza\Morosos::class)->name('cobranza.morosos');
-    Route::get('cobranza/morosos/pdf', MorososPdfController::class)->name('cobranza.morosos.pdf');
-    Route::get('recibos/{receiptNumber}', [RecibosController::class, 'show'])->name('recibos.print');
-
-    // Constancias — accesible para admin y cobrador
-    Route::get('constancias', Constancias\Index::class)->name('constancias.index');
-    Route::get('constancias/{contract}/pdf', ConstanciaAbonadoPdfController::class)->name('constancias.pdf');
-
-    // Solo super administrador
+    // Solo super administrador (no requiere tenant seleccionado)
     Route::middleware('role:super_admin')->group(function () {
         Route::get('tenants', Tenants\Index::class)->name('tenants.index');
         Route::get('admin/servicios', SuperAdmin\Servicios\Index::class)->name('admin.servicios.index');
     });
 
-    // Solo administrador
-    Route::middleware('role:admin')->group(function () {
-        Route::get('servicios', Servicios\Index::class)->name('servicios.index');
-        Route::get('clientes', Clientes\Index::class)->name('clientes.index');
-        Route::get('contratos', Contratos\Index::class)->name('contratos.index');
-        Route::get('cuotas', Cuotas\Index::class)->name('cuotas.index');
-        Route::get('cuotas/cobros-adicionales', Cuotas\CobrosAdicionales::class)->name('cuotas.cobros-adicionales');
-        Route::get('contabilidad', Contabilidad\Index::class)->name('contabilidad.index');
-        Route::get('contabilidad/estado-cuenta', Contabilidad\EstadoCuenta::class)->name('contabilidad.estado-cuenta');
-        Route::get('contabilidad/estado-resultados/pdf', EstadoResultadosPdfController::class)->name('contabilidad.estado-resultados.pdf');
-        Route::get('usuarios', Usuarios\Index::class)->name('usuarios.index');
+    // Rutas que requieren tenant seleccionado
+    Route::middleware('tenant.selected')->group(function () {
+        Route::get('dashboard', Dashboard\Index::class)->name('dashboard');
+        // Cobranza — accesible para admin y cobrador
+        Route::get('cobranza', Cobranza\Registrar::class)->name('cobranza.registrar');
+        Route::get('cobranza/historial', Cobranza\HistorialCliente::class)->name('cobranza.historial');
+        Route::get('cobranza/morosos', Cobranza\Morosos::class)->name('cobranza.morosos');
+        Route::get('cobranza/morosos/pdf', MorososPdfController::class)->name('cobranza.morosos.pdf');
+        Route::get('recibos/{receiptNumber}', [RecibosController::class, 'show'])->name('recibos.print');
+
+        // Constancias — accesible para admin y cobrador
+        Route::get('constancias', Constancias\Index::class)->name('constancias.index');
+        Route::get('constancias/{contract}/pdf', ConstanciaAbonadoPdfController::class)->name('constancias.pdf');
+
+        // Solo administrador
+        Route::middleware('role:admin')->group(function () {
+            Route::get('servicios', Servicios\Index::class)->name('servicios.index');
+            Route::get('clientes', Clientes\Index::class)->name('clientes.index');
+            Route::get('contratos', Contratos\Index::class)->name('contratos.index');
+            Route::get('cuotas', Cuotas\Index::class)->name('cuotas.index');
+            Route::get('cuotas/cobros-adicionales', Cuotas\CobrosAdicionales::class)->name('cuotas.cobros-adicionales');
+            Route::get('contabilidad', Contabilidad\Index::class)->name('contabilidad.index');
+            Route::get('contabilidad/estado-cuenta', Contabilidad\EstadoCuenta::class)->name('contabilidad.estado-cuenta');
+            Route::get('contabilidad/estado-resultados/pdf', EstadoResultadosPdfController::class)->name('contabilidad.estado-resultados.pdf');
+            Route::get('usuarios', Usuarios\Index::class)->name('usuarios.index');
+        });
     });
 });
 

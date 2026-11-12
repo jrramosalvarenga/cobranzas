@@ -10,6 +10,13 @@
     <div class="py-8">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
+            @if (session('warning'))
+                <div class="bg-amber-100 border border-amber-300 text-amber-800 px-4 py-3 rounded-md text-sm font-medium flex items-center gap-2">
+                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                    {{ session('warning') }}
+                </div>
+            @endif
+
             <div class="flex items-center justify-between gap-4">
                 <input wire:model.live.debounce.400ms="search" type="text" placeholder="Buscar organización..."
                     class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 shadow-sm w-full max-w-xs" />
