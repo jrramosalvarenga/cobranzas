@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cuota;
+use App\Models\Scopes\TenantScope;
+use App\Models\Tenant;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class MorososPdfController extends Controller
 {
     public function __invoke()
     {
+        $tenant = Tenant::find(TenantScope::currentTenantId());
         $cuotasVencidas = Cuota::query()
             ->whereIn('status', ['pendiente', 'parcial', 'vencida'])
             ->whereDate('due_date', '<', now()->startOfDay())
@@ -41,7 +44,8 @@ class MorososPdfController extends Controller
             'totalMorosos' => $morosos->count(),
             'totalDeudaGlobal' => $totalDeudaGlobal,
             'fecha' => now()->translatedFormat('d/m/Y H:i'),
-            'companyName' => config('cobranzas.company_name'),
+            'tenant' => $tenant,
+            'companyName' => $tenant?->companyName() ?? config('cobranzas.company_name'),
             'currencySymbol' => config('cobranzas.currency_symbol'),
         ]);
 

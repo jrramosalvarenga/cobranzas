@@ -100,17 +100,21 @@
 </head>
 <body>
     <div class="header-row">
-        <div class="header-logo">
-            <img src="{{ public_path('images/escudo-junta-agua.jpeg') }}">
-        </div>
+        @if($tenant?->logoPath())
+            <div class="header-logo">
+                <img src="{{ $tenant->logoPath() }}">
+            </div>
+        @endif
         <div class="header-center">
-            <div class="org">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
-            <div class="company">{{ $companyName }}</div>
+            <div class="org">{{ $tenant?->name ?? '' }}</div>
+            <div class="company">{{ $tenant?->companyName() ?? config('cobranzas.company_name') }}</div>
             <div class="sub">Constancia generada el {{ $fecha }}</div>
         </div>
-        <div class="header-logo" style="text-align: right;">
-            <img src="{{ public_path('images/escudo-honduras.png') }}">
-        </div>
+        @if($tenant?->logoSecondaryPath())
+            <div class="header-logo" style="text-align: right;">
+                <img src="{{ $tenant->logoSecondaryPath() }}">
+            </div>
+        @endif
     </div>
 
     <div class="title">Constancia de Abonado</div>
@@ -121,7 +125,7 @@
             <span class="dato">{{ $cliente->full_name }}</span>,
             identificado/a con documento N° <span class="dato">{{ $cliente->document_number }}</span>,
             con domicilio en <span class="dato">{{ $cliente->address_line }}</span>,
-            es abonado/a activo/a de <span class="dato">{{ $companyName }}</span>.
+            es abonado/a activo/a de <span class="dato">{{ $tenant?->companyName() ?? config('cobranzas.company_name') }}</span>.
         </p>
 
         <p>
@@ -136,7 +140,7 @@
         </p>
 
         <p>
-            Dada en San Francisco de la Paz, Olancho, a los {{ now()->translatedFormat('d') }} días
+            Dada en {{ $tenant?->address() ?: 'la localidad' }}, a los {{ now()->translatedFormat('d') }} días
             del mes de {{ now()->translatedFormat('F') }} de {{ now()->translatedFormat('Y') }}.
         </p>
     </div>
@@ -145,6 +149,6 @@
         <div class="firma-linea">Firma y sello</div>
     </div>
 
-    <div class="footer">{{ $companyName }} &mdash; San Francisco de la Paz, Olancho</div>
+    <div class="footer">{{ $tenant?->companyName() ?? config('cobranzas.company_name') }}@if($tenant?->address()) &mdash; {{ $tenant->address() }}@endif</div>
 </body>
 </html>

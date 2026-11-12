@@ -34,6 +34,42 @@ class Tenant extends Model
         return $path ? asset('storage/'.$path) : null;
     }
 
+    public function logoSecondaryUrl(): ?string
+    {
+        $path = $this->settings['logo_secondary'] ?? null;
+
+        return $path ? asset('storage/'.$path) : null;
+    }
+
+    public function logoPath(): ?string
+    {
+        $path = $this->settings['logo'] ?? null;
+
+        return $path ? storage_path('app/public/'.$path) : null;
+    }
+
+    public function logoSecondaryPath(): ?string
+    {
+        $path = $this->settings['logo_secondary'] ?? null;
+
+        return $path ? storage_path('app/public/'.$path) : null;
+    }
+
+    public function companyName(): string
+    {
+        return $this->settings['company_name'] ?? $this->name;
+    }
+
+    public function address(): string
+    {
+        return $this->settings['address'] ?? '';
+    }
+
+    public function slogan(): string
+    {
+        return $this->settings['slogan'] ?? '';
+    }
+
     public function primaryColor(): string
     {
         return $this->settings['primary_color'] ?? '#0f2a4a';

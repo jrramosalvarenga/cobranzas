@@ -75,6 +75,9 @@ new class extends Component
                     </x-nav-link>
                     @endif
                     @if(auth()->user()->isSuperAdmin())
+                    <x-nav-link :href="route('admin.servicios.index')" :active="request()->routeIs('admin.servicios.*')" wire:navigate>
+                        {{ __('Servicios (Admin)') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
                         {{ __('Organizaciones') }}
                     </x-nav-link>
@@ -157,6 +160,9 @@ new class extends Component
             </x-responsive-nav-link>
             @endif
             @if(auth()->user()->isSuperAdmin())
+            <x-responsive-nav-link :href="route('admin.servicios.index')" :active="request()->routeIs('admin.servicios.*')" wire:navigate>
+                {{ __('Servicios (Admin)') }}
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('tenants.index')" :active="request()->routeIs('tenants.*')" wire:navigate>
                 {{ __('Organizaciones') }}
             </x-responsive-nav-link>

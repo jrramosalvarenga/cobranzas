@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
-use Illuminate\Http\Request;
+use App\Models\Tenant;
 
 class RecibosController extends Controller
 {
@@ -17,6 +17,7 @@ class RecibosController extends Controller
         abort_if($pagos->isEmpty(), 404);
 
         $primero = $pagos->first();
+        $tenant = Tenant::find($primero->tenant_id);
 
         return view('recibos.print', [
             'receiptNumber' => $receiptNumber,
@@ -26,6 +27,7 @@ class RecibosController extends Controller
             'fecha' => $primero->payment_date,
             'metodo' => $primero->method,
             'cajero' => $primero->user,
+            'tenant' => $tenant,
         ]);
     }
 }

@@ -112,17 +112,21 @@
 </head>
 <body>
     <div class="header-row">
-        <div class="header-logo">
-            <img src="{{ public_path('images/escudo-junta-agua.jpeg') }}">
-        </div>
+        @if($tenant?->logoPath())
+            <div class="header-logo">
+                <img src="{{ $tenant->logoPath() }}">
+            </div>
+        @endif
         <div class="header-center">
-            <div class="org">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
+            <div class="org">{{ $tenant?->name ?? '' }}</div>
             <div class="company">{{ $companyName }}</div>
             <div class="title">ESTADO DE RESULTADOS MES DE {{ $mesLabel }}</div>
         </div>
-        <div class="header-logo" style="text-align: right;">
-            <img src="{{ public_path('images/escudo-honduras.png') }}">
-        </div>
+        @if($tenant?->logoSecondaryPath())
+            <div class="header-logo" style="text-align: right;">
+                <img src="{{ $tenant->logoSecondaryPath() }}">
+            </div>
+        @endif
     </div>
 
     <table>
@@ -173,6 +177,6 @@
         </tbody>
     </table>
 
-    <div class="footer">{{ $companyName }} &mdash; Generado el {{ now()->translatedFormat('d/m/Y H:i') }}</div>
+    <div class="footer">{{ $companyName }}@if($tenant?->address()) &mdash; {{ $tenant->address() }}@endif &mdash; Generado el {{ now()->translatedFormat('d/m/Y H:i') }}</div>
 </body>
 </html>

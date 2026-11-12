@@ -103,18 +103,52 @@
                     </label>
 
                     <hr class="border-gray-200 dark:border-gray-700">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Personalización</h3>
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Información para documentos</h3>
 
                     <div>
-                        <x-input-label for="logo" value="Logo" />
-                        @if($currentLogoUrl && !$removeLogo)
-                            <div class="mt-1 flex items-center gap-3">
-                                <img src="{{ $currentLogoUrl }}" alt="Logo" class="h-12 w-12 rounded object-cover">
-                                <button type="button" wire:click="$set('removeLogo', true)" class="text-xs text-red-600 hover:underline">Quitar logo</button>
-                            </div>
-                        @endif
-                        <input wire:model="logo" type="file" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                        <x-input-error :messages="$errors->get('logo')" class="mt-2" />
+                        <x-input-label for="company_name" value="Nombre de empresa (documentos)" />
+                        <x-text-input wire:model="company_name" id="company_name" class="block mt-1 w-full" placeholder="Ej. Sistema de Agua Potable" />
+                        <x-input-error :messages="$errors->get('company_name')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="address" value="Dirección / ubicación" />
+                        <x-text-input wire:model="address" id="address" class="block mt-1 w-full" placeholder="Ej. San Francisco de la Paz, Olancho" />
+                        <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="slogan" value="Eslogan (opcional)" />
+                        <x-text-input wire:model="slogan" id="slogan" class="block mt-1 w-full" placeholder="Ej. No hay vida sin agua" />
+                        <x-input-error :messages="$errors->get('slogan')" class="mt-2" />
+                    </div>
+
+                    <hr class="border-gray-200 dark:border-gray-700">
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Personalización visual</h3>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="logo" value="Logo principal" />
+                            @if($currentLogoUrl && !$removeLogo)
+                                <div class="mt-1 flex items-center gap-3">
+                                    <img src="{{ $currentLogoUrl }}" alt="Logo" class="h-12 w-12 rounded object-cover">
+                                    <button type="button" wire:click="$set('removeLogo', true)" class="text-xs text-red-600 hover:underline">Quitar</button>
+                                </div>
+                            @endif
+                            <input wire:model="logo" type="file" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                            <x-input-error :messages="$errors->get('logo')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="logo_secondary" value="Logo secundario" />
+                            @if($currentLogoSecondaryUrl && !$removeLogoSecondary)
+                                <div class="mt-1 flex items-center gap-3">
+                                    <img src="{{ $currentLogoSecondaryUrl }}" alt="Logo secundario" class="h-12 w-12 rounded object-cover">
+                                    <button type="button" wire:click="$set('removeLogoSecondary', true)" class="text-xs text-red-600 hover:underline">Quitar</button>
+                                </div>
+                            @endif
+                            <input wire:model="logo_secondary" type="file" id="logo_secondary" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                            <x-input-error :messages="$errors->get('logo_secondary')" class="mt-2" />
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">

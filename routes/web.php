@@ -13,6 +13,7 @@ use App\Livewire\Contratos;
 use App\Livewire\Cuotas;
 use App\Livewire\Dashboard;
 use App\Livewire\Servicios;
+use App\Livewire\SuperAdmin;
 use App\Livewire\Tenants;
 use App\Livewire\Usuarios;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Solo super administrador
     Route::middleware('role:super_admin')->group(function () {
         Route::get('tenants', Tenants\Index::class)->name('tenants.index');
+        Route::get('admin/servicios', SuperAdmin\Servicios\Index::class)->name('admin.servicios.index');
     });
 
     // Solo administrador

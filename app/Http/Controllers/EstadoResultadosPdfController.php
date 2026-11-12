@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountingEntry;
 use App\Models\Payment;
+use App\Models\Scopes\TenantScope;
+use App\Models\Tenant;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -12,6 +14,8 @@ class EstadoResultadosPdfController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $tenant = Tenant::find(TenantScope::currentTenantId());
+
         $desde = $request->query('desde', now()->startOfMonth()->toDateString());
         $hasta = $request->query('hasta', now()->toDateString());
 
@@ -32,7 +36,8 @@ class EstadoResultadosPdfController extends Controller
             'mesLabel' => mb_strtoupper($mesLabel),
             'desde' => $desde,
             'hasta' => $hasta,
-            'companyName' => config('cobranzas.company_name'),
+            'tenant' => $tenant,
+            'companyName' => $tenant?->companyName() ?? config('cobranzas.company_name'),
             'currencySymbol' => config('cobranzas.currency_symbol'),
         ]);
 

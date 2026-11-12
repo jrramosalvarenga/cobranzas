@@ -94,14 +94,18 @@
 </head>
 <body>
     <div class="header-row">
-        <img src="{{ asset('images/escudo-junta-agua.jpeg') }}" alt="">
+        @if($tenant?->logoUrl())
+            <img src="{{ $tenant->logoUrl() }}" alt="">
+        @endif
         <div class="header-text">
-            <div style="font-size: 8px; font-weight: bold; line-height: 1.2;">JUNTA DE AGUA DE SAN FRANCISCO DE LA PAZ, OLANCHO.</div>
-            <div style="font-size: 11px; font-weight: bold; margin: 1px 0;">{{ config('cobranzas.company_name') }}</div>
+            <div style="font-size: 8px; font-weight: bold; line-height: 1.2;">{{ $tenant?->name ?? '' }}</div>
+            <div style="font-size: 11px; font-weight: bold; margin: 1px 0;">{{ $tenant?->companyName() ?? config('cobranzas.company_name') }}</div>
             <div style="font-size: 9px;">Recibo de pago</div>
             <div style="font-size: 9px;">N° {{ $receiptNumber }}</div>
         </div>
-        <img src="{{ asset('images/escudo-honduras.webp') }}" alt="">
+        @if($tenant?->logoSecondaryUrl())
+            <img src="{{ $tenant->logoSecondaryUrl() }}" alt="">
+        @endif
     </div>
 
     <div class="line"></div>
@@ -144,9 +148,11 @@
         ¡Gracias por su pago!
     </div>
 
-    <div class="footer" style="font-style: italic;">
-        No hay vida sin agua
-    </div>
+    @if($tenant?->slogan())
+        <div class="footer" style="font-style: italic;">
+            {{ $tenant->slogan() }}
+        </div>
+    @endif
 
     <script>
         window.onload = function () {
