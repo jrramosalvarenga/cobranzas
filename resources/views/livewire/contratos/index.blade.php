@@ -63,8 +63,8 @@
                                         <div class="text-xs text-gray-500">{{ Str::limit($contrato->description, 40) }}</div>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->client->full_name }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->serviceType->name }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->client?->full_name ?? '—' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->serviceType?->name ?? '—' }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ config('cobranzas.currency_symbol') }} {{ number_format($contrato->effectiveMonthlyFee(), 2) }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->billing_day }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">

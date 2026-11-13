@@ -82,6 +82,6 @@ class Contract extends Model
 
     public function effectiveMonthlyFee(): string
     {
-        return $this->monthly_fee ?? $this->serviceType->monthly_price;
+        return $this->monthly_fee ?? $this->serviceType?->monthly_price ?? '0.00';
     }
 }

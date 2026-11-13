@@ -43,7 +43,7 @@
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $cliente->full_name }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $cliente->document_number }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->contract_number }}</td>
-                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->serviceType->name }}</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-200">{{ $contrato->serviceType?->name ?? '—' }}</td>
                                         <td class="px-4 py-3 text-sm text-right">
                                             <a href="{{ route('constancias.pdf', $contrato) }}" target="_blank"
                                                 class="text-indigo-600 hover:underline font-medium">
